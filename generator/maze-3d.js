@@ -1,0 +1,3 @@
+class Maze3D {
+    
+}
