@@ -13,19 +13,18 @@ class Cell {
     return this.#walls.values();
   }
 
+  allWalls() {
+    for (const direction of this.walls) {
+      this.#walls.set(direction, true);
+    }
+  } 
+
   addWall(direction, boolean) {
-    his.#walls.set(direction, boolean);
+    this.#walls.set(direction, boolean);
   }
 
   removeWall(direction) {
     this.#walls.delete(direction);
-  }
-
-  getNeighbors(value) {
-    const node = this.#nodes.get(value);
-    if (node) {
-      return node.neighbors;
-    }
   }
 }
 
