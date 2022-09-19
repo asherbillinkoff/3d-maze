@@ -9,13 +9,15 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
         const stack = new Array();
         const visited = new Set();
         const currLevel = Array(this.rows).fill().map(() => Array(this.columns).fill(0));
-        const startIdx = [Math.floor(Math.random()) * this.rows, Math.floor(Math.random()) * this.columns, Math.floor(Math.random()) * this.levels];
-        const startCell = new Cell(...startIdx);
-        startCell.allWalls();
-        stack.push(startCell);
+        const [z, y, x] = [Math.floor(Math.random()) * this.rows, Math.floor(Math.random()) * this.columns, Math.floor(Math.random()) * this.levels];
+        const currCell = new Cell(z, y, x);
+        const neighbours = [[z - 1, y, x], [z, y - 1, x], [z, y + 1, x], [z, y, x - 1], [z, y, x + 1],
+                            [z + 1, y, x]];
+        currCell.allWalls();
+        stack.push(currCell);
 
         while (stack.length > 0) {
-
+            
 
         }
         

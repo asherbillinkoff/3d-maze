@@ -10,7 +10,7 @@ class Cell {
   }
 
   get walls() {
-    return this.#walls.values();
+    return this.#walls;
   }
 
   allWalls() {
