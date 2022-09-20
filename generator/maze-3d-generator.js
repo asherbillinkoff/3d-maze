@@ -1,11 +1,11 @@
 class Maze3DGenerator {
-    constructor(rows, columns, levels) {
+    constructor(levels, columns, rows) {
         if (this.constructor === Maze3DGenerator) {
             throw new Error('Cannot instantiate the abstract class Maze3DGenerator');
-          }
-        this.rows = rows;
-        this.columns = columns;
+        }
         this.levels = levels;
+        this.columns = columns;
+        this.rows = rows;
     }
 
     generate() {
@@ -15,8 +15,18 @@ class Maze3DGenerator {
         // this should probably be an abstract method
     }
 
-    toString() {
-        // will be passed the maze 3d object and will print out the levels to the console
+    toString(maze) {
+        // for (let k = 0; k < this.levels; k++) {
+        //     console.log('Level ', k, '/n');
+
+        //     // Print the top wall
+        //     for (let j = 0; j < this.columns, j++) {
+        //         console.log('_');
+        //     }
+        //     for (let j = 0; j < this.columns; j++) {
+        //         for (let i = 0; i < this.columns; i++) {
+        //             console.log(maze)
+        //     }
     }
 
     measureAlgorithmTime() {

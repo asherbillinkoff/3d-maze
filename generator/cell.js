@@ -2,6 +2,7 @@ class Cell {
   /** @type {Map<Number, Boolean>} */
   #walls
   #position
+  static directions = ['l', 'r', 'f', 'b', 'u', 'd'];
 
   constructor(z, y, x) {
     // Positions in this map will correspond to ('l', 'r', 'f', 'b', 'u', 'd') => (left, right, forward (top of page), backward (bottom of page), up, down)
@@ -13,8 +14,12 @@ class Cell {
     return this.#walls;
   }
 
+  get position() {
+    return this.#position;
+  }
+
   allWalls() {
-    for (const direction of this.walls) {
+    for (const direction of Cell.directions) {
       this.#walls.set(direction, true);
     }
   } 
@@ -24,7 +29,7 @@ class Cell {
   }
 
   removeWall(direction) {
-    this.#walls.delete(direction);
+    this.#walls.set(direction, false);
   }
 }
 

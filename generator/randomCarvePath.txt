@@ -1,0 +1,36 @@
+        const queue = [[startCell]];
+        const visited = new Set();
+        const directions = [[-1, 0, 0, 'd'], [0, - 1, 0, 'f'], [0, 1, 0, 'b'], [0, 0, - 1, 'l'], [0, 0, 1, 'r'], [1, 0, 0, 'u']];
+        const directionPairs = new Map ([['l', 'r'], ['r', 'l'], ['f', 'b'], ['b', 'f'], ['u', 'd'], ['d', 'u']]);
+        
+        while (queue.length > 0) {
+            let currCell = queue.shift()
+            if (currCell === finishCell) {
+                return [maze, startCell, finishCell];
+            }
+
+            visited.add(currCell);
+
+            for (const direction of directions) {
+                let neighbour = [z + direction[0], y + direction[1], x + direction[2], direction[3]];
+
+                if (neighbour[0] >= 0 && neighbour[0] < this.levels
+                && neighbour[1] >= 0 && neighbour[1] < this.columns
+                && neighbour[2] >= 0 && neighbour[2] < this.rows
+                && !visited.has(neighbour)) {
+                    const currentDistance = Math.abs((currCell.position[0] - finishCell[0])) + Math.abs((currCell.position[1] - finishCell[1])) + Math.abs((currCell.position[2] - finishCell[2]));
+                    const neighbourDistance = Math.abs((neighbour[0] - finishCell[0])) + Math.abs((neighbour[1] - finishCell[1])) + Math.abs((neighbour[2] - finishCell[2]));
+                    if (neighbourDistance < currentDistance) {
+                        currCell.removeWall(neighbour[3]);
+                        visited.add(currCell.position);
+                        currCell = maze[neighbour[0]][neighbour[1]][neighbour[2]];
+                        let neighbourWallDemo = directionPairs.get(neighbour[3]);
+                        currCell.removeWall(neighbourWallDemo);
+                        [z, y, x] = currCell.position;
+
+                        }
+                    }
+                }
+            }
+        }
+    }
