@@ -15,23 +15,11 @@ class Maze3DGenerator {
         // this should probably be an abstract method
     }
 
-    toString(maze) {
-        // for (let k = 0; k < this.levels; k++) {
-        //     console.log('Level ', k, '/n');
 
-        //     // Print the top wall
-        //     for (let j = 0; j < this.columns, j++) {
-        //         console.log('_');
-        //     }
-        //     for (let j = 0; j < this.columns; j++) {
-        //         for (let i = 0; i < this.columns; i++) {
-        //             console.log(maze)
-        //     }
-    }
 
     measureAlgorithmTime() {
         //calls generate and times it.
     }
-}
+};
 
 export default Maze3DGenerator;

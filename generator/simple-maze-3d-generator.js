@@ -20,8 +20,8 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
 
             // Array containing the actively constructed level. Reset level for every new k value.
             const currLevel = Array(this.rows).fill().map(() => Array(this.columns).fill(0));
-            for (let j = 0; j < this.columns; j++) {
-                for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.rows; j++) {
+                for (let i = 0; i < this.columns; i++) {
                     let currCell = new Cell(k, j, i);
                     let wallValue;
 
@@ -33,16 +33,16 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
                         currCell.addWall(directions[d], wallValue);
                     }
 
-                    currLevel[i][j] = currCell;
+                    currLevel[j][i] = currCell;
                         
                     // Syncing neighbouring walls with existing cells.
-                    if (i > 0 && i < this.rows && currLevel[i - 1][j]) {
-                        let forwardNeighbourBoolean = currLevel[i - 1][j].walls.get('b');
-                        currCell.addWall('f', forwardNeighbourBoolean);
-                    }
-                    if (j > 0 && j < this.columns && currLevel[i][j - 1]) {
-                        let leftNeighbourBoolean = currLevel[i][j - 1].walls.get('r')
+                    if (i > 0 && i < this.rows && currLevel[j][i - 1]) {
+                        let leftNeighbourBoolean = currLevel[j][i - 1].walls.get('r');
                         currCell.addWall('l', leftNeighbourBoolean);
+                    }
+                    if (j > 0 && j < this.columns && currLevel[j - 1][i]) {
+                        let forwardNeighbourBoolean = currLevel[j - 1][i].walls.get('b')
+                        currCell.addWall('f', forwardNeighbourBoolean);
                     }
                     if (k > 0 && k < this.levels) {
                         let downNeighbourBoolean = maze[k - 1][j][i].walls.get('u');
@@ -58,18 +58,15 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
     }
 
     _carveRandomPath(maze) {
-        // This algorithm will search through neighbours of the current cell and select based on the closest distance to the finish cell.
-        // If the neighbour is closer to the finish cell, then it will be selected as the new current cell.
         const startCell = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.columns), Math.floor(Math.random() * this.rows)];
         const finishCell = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.columns), Math.floor(Math.random() * this.rows)];
-        const currCell = maze[startCell[0]][startCell[1]][startCell[2]];
-        const visited = new Set();
-        const directions = [[-1, 0, 0, 'd'], [0, - 1, 0, 'f'], [0, 1, 0, 'b'], [0, 0, - 1, 'l'], [0, 0, 1, 'r'], [1, 0, 0, 'u']];
-        const directionPairs = new Map ([['l', 'r'], ['r', 'l'], ['f', 'b'], ['b', 'f'], ['u', 'd'], ['d', 'u']]);
+        let currCell = maze[startCell[0]][startCell[1]][startCell[2]];
         const directionVector = [startCell[0] - finishCell[0], startCell[1] - finishCell[1], startCell[2] - finishCell[2]];
-        let neighbour; // Do i need this here?
+        let targetDistance = Infinity;
+        let neighbour;
 
-        while (currCell.position !== finishCell) {
+        while (targetDistance > 0) {
+            targetDistance = (Math.abs(currCell.position[0] - finishCell[0])) + (Math.abs(currCell.position[1] - finishCell[1])) + (Math.abs(currCell.position[2] - finishCell[2]));
             // Variable will select a random number between 0-2 which will select an axis for the path to randomly move.
             let directionChoice = Math.floor(Math.random() * startCell.length);
 
@@ -79,11 +76,13 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
                         currCell.removeWall('d');
                         neighbour = maze[currCell.position[0] - 1][currCell.position[1]][currCell.position[2]];
                         neighbour.removeWall('u');
+                        currCell = neighbour;
                     }
                     else {
                         currCell.removeWall('u');
                         neighbour = maze[currCell.position[0] + 1][currCell.position[1]][currCell.position[2]];
                         neighbour.removeWall('d');
+                        currCell = neighbour;
                     }
                 }
             }
@@ -93,11 +92,13 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
                         currCell.removeWall('f');
                         neighbour = maze[currCell.position[0]][currCell.position[1] - 1][currCell.position[2]];
                         neighbour.removeWall('b');
+                        currCell = neighbour;
                     }
                     else {
                         currCell.removeWall('b');
                         neighbour = maze[currCell.position[0]][currCell.position[1] + 1][currCell.position[2]];
                         neighbour.removeWall('f');
+                        currCell = neighbour;
                     }
                 }
             }
@@ -107,11 +108,13 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
                         currCell.removeWall('l');
                         neighbour = maze[currCell.position[0]][currCell.position[1]][currCell.position[2] - 1];
                         neighbour.removeWall('r');
+                        currCell = neighbour;
                     }
                     else {
                         currCell.removeWall('r');
                         neighbour = maze[currCell.position[0]][currCell.position[1]][currCell.position[2] + 1];
                         neighbour.removeWall('l');
+                        currCell = neighbour;
                     }
                 }
             }
