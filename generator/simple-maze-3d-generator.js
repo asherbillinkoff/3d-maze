@@ -28,9 +28,31 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
                     // Iterating over all the directions of the cell to add the walls.
                     for (let d = 0; d < directions.length; d++) {
 
-                         // Generating the random wall placements.
+                        // Generating the random wall placements.
                         wallValue = Boolean(Math.round(Math.random()));
                         currCell.addWall(directions[d], wallValue);
+
+                        // Making sure all boundary cells have walls in the correct spots.
+                        if (k === 0) {
+                            currCell.addWall('d', true);
+                        }
+                        else if (k === this.levels - 1) {
+                            currCell.addWall('u', true);
+                        }
+
+                        if (j === 0) {
+                            currCell.addWall('f', true);
+                        }
+                        else if (j === this.rows - 1) {
+                            currCell.addWall('b', true);
+                        }
+
+                        if (i === 0) {
+                            currCell.addWall('l', true);
+                        }
+                        else if (j === this.columns - 1) {
+                            currCell.addWall('r', true);
+                        }
                     }
 
                     currLevel[j][i] = currCell;
@@ -60,6 +82,8 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
     _carveRandomPath(maze) {
         const startCell = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.columns), Math.floor(Math.random() * this.rows)];
         const finishCell = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.columns), Math.floor(Math.random() * this.rows)];
+        maze[startCell[0]][startCell[1]][startCell[2]].addWall('s', true);
+        maze[finishCell[0]][finishCell[1]][finishCell[2]].addWall('g', true);
         let currCell = maze[startCell[0]][startCell[1]][startCell[2]];
         const directionVector = [startCell[0] - finishCell[0], startCell[1] - finishCell[1], startCell[2] - finishCell[2]];
         let targetDistance = Infinity;
@@ -120,6 +144,13 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
             }
         }
         return [maze, startCell, finishCell];
+    }
+
+    measureAlgorithmTime() {
+        const start = Date.now();
+        this.generate();
+        const end = Date.now();
+        console.log(`The maze took ${end - start} ms to generate.`);
     }
 };
 

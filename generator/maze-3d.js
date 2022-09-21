@@ -33,13 +33,19 @@ class Maze3D {
                     }
 
                     // Separate if statement to check the wall status for the up down walls.
-                    if (currCell.walls.get('u') === true && currCell.walls.get('d') === true) {
+                    if (currCell.walls.get('s') === true) {
+                        currRow += 'S';
+                    }
+                    else if (currCell.walls.get('g') === true) {
+                        currRow += 'G';
+                    }
+                    else if (currCell.walls.get('u') === false && currCell.walls.get('d') === false) {
                         currRow += '↕';
                     }
-                    else if (currCell.walls.get('u') === true && currCell.walls.get('d') === false) {
+                    else if (currCell.walls.get('u') === false && currCell.walls.get('d') === true) {
                         currRow += '↑';
                     }
-                    else if (currCell.walls.get('u') === false && currCell.walls.get('d') === true) {
+                    else if (currCell.walls.get('u') === true && currCell.walls.get('d') === false) {
                         currRow += '↓';
                     }
                     else {

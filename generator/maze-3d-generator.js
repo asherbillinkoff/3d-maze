@@ -15,8 +15,6 @@ class Maze3DGenerator {
         // this should probably be an abstract method
     }
 
-
-
     measureAlgorithmTime() {
         //calls generate and times it.
     }
