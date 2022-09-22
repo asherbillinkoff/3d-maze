@@ -35,6 +35,7 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
                     nextCell.removeWall(directionPairs.get(neighbour[3]));
                     maze[nextCell.position[0]][nextCell.position[1]][nextCell.position[2]] = nextCell;
                     visited.add(nextCell.position.toString());
+                    //if (visited.has(nextCell.position.toString()))
                     stack.push(nextCell);
                     currCell = nextCell;
                     [z, y, x] = currCell.position;
@@ -43,7 +44,7 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
             }
             currCell = stack.pop();
         }
-        currCell.addWall('g', true);
+        maze[currCell.position[0]][currCell.position[1]][currCell.position[2]].addWall('g', true);
         return new Maze3D(this.rows, this.columns, this.levels, maze);
     }
 };
