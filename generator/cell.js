@@ -2,34 +2,54 @@ class Cell {
   /** @type {Map<Number, Boolean>} */
   #walls
   #position
+  #status
+
   static directions = ['l', 'r', 'f', 'b', 'u', 'd'];
 
   constructor(z, y, x) {
     // Positions in this map will correspond to ('l', 'r', 'f', 'b', 'u', 'd') => (left, right, forward (top of page), backward (bottom of page), up, down)
-    this.#walls = new Map();          // Keys = directions above, Values = wall status boolean
-    this.#position = [z, y, x];
+    this.#walls = new Map();          // Keys = directions above, Values = wall status boolean.
+    this.#position = [z, y, x];       // Internal object pointer to the cells location in the maze.
+    this.#status = new Set();         // If set contains 'a' -> player currently on this cell (active); 's' -> start cell; 'g' -> goal cell
   }
 
   get walls() {
     return this.#walls;
   }
 
-  get position() {
-    return this.#position;
-  }
-
   allWalls() {
     for (const direction of Cell.directions) {
       this.#walls.set(direction, true);
     }
+    this.#walls.set('x', false);    // Active user cell when true.
+    this.#walls.set('s', false);    // Starting cell when true.
+    this.#walls.set('g', false);    // Goal cell when true.
   } 
 
   addWall(direction, boolean) {
+    if (!Cell.directions.includes(direction) && typeof boolean !== "boolean" ) {
+      throw new Error('Wall update invalid.')
+    }
     this.#walls.set(direction, boolean);
   }
 
   removeWall(direction) {
     this.#walls.set(direction, false);
+  }
+
+  get position() {
+    return this.#position;
+  }
+
+  updateStatus(value) {
+    if (value !== 'a' && value !== 's' && value !== 'g') {
+      throw new Error("Invalid cell status update. Only accepts 'a', 's', 'g'")
+    }
+    this.#status.add(value);
+  }
+
+  checkStatus(value) {
+    return this.#status.has(value);
   }
 }
 

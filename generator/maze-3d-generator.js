@@ -8,16 +8,9 @@ class Maze3DGenerator {
         this.rows = rows;
     }
 
-    generate() {
-        throw new Error('This method must be implemented in a subclass')
-        // returns an instance of Maze3D object (only a 2D slice)
-        // mehod will run as many times are there are levels
-        // this should probably be an abstract method
-    }
+    generate() {}
 
-    measureAlgorithmTime() {
-        //calls generate and times it.
-    }
+    measureAlgorithmTime() {}
 };
 
 export default Maze3DGenerator;

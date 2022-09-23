@@ -82,8 +82,8 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
     _carveRandomPath(maze) {
         const startCell = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.columns), Math.floor(Math.random() * this.rows)];
         const finishCell = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.columns), Math.floor(Math.random() * this.rows)];
-        maze[startCell[0]][startCell[1]][startCell[2]].addWall('s', true);
-        maze[finishCell[0]][finishCell[1]][finishCell[2]].addWall('g', true);
+        maze[startCell[0]][startCell[1]][startCell[2]].updateStatus('s');
+        maze[finishCell[0]][finishCell[1]][finishCell[2]].updateStatus('g');
         let currCell = maze[startCell[0]][startCell[1]][startCell[2]];
         const directionVector = [startCell[0] - finishCell[0], startCell[1] - finishCell[1], startCell[2] - finishCell[2]];
         let targetDistance = Infinity;

@@ -1,3 +1,5 @@
+import Cell from './cell.js'
+
 class Maze3D {
     constructor(rows, columns, levels, maze) {
         this.rows = rows;
@@ -33,10 +35,10 @@ class Maze3D {
                     }
 
                     // Separate if statement to check the wall status for the up down walls.
-                    if (currCell.walls.get('s') === true) {
+                    if (currCell.checkStatus('s') === true) {
                         currRow += 'S';
                     }
-                    else if (currCell.walls.get('g') === true) {
+                    else if (currCell.checkStatus('g') === true) {
                         currRow += 'G';
                     }
                     else if (currCell.walls.get('u') === false && currCell.walls.get('d') === false) {
