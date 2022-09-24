@@ -12,9 +12,10 @@ class MazeDomain extends Searchable {
         const transitions = [];
         
         for (const direction in directions) {
-            let neighbour = [z + direction[0], y + direction[1], x + directions[2], directions[3]];
+            let neighbour = [z + direction[0], y + direction[1], x + directions[2]];
             if (neighbour[0] >= 0 && neighbour[0] < this.maze.levels && neighbour[1] >= 0 && neighbour[1] < this.maze.columns && neighbour[2] >= 0 && neighbour[2] < this.maze.rows) {
-                transitions.push(maze.toString())
+                transitions.push([maze.toString(), direction[3]])
+            }
         }
         return transitions;
     }

@@ -76,7 +76,7 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
         }
         // After the random board has been generated, a random path between start and finish must be carved.
         const [finalMaze, start, finish] = this._carveRandomPath(maze);
-        return new Maze3D(this.rows, this.columns, this.levels, finalMaze);
+        return new Maze3D(this.levels, this.columns, this.rows, finalMaze);
     }
 
     _carveRandomPath(maze) {

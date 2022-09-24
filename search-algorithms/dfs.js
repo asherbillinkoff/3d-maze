@@ -1,5 +1,6 @@
 import State from './state.js'
 import Searchable from './searchable.js'
+import Node from './node.js'
 
 class DFS {
     constructor() {}
@@ -11,27 +12,29 @@ class DFS {
     search(searchable) {
         const explored = new Set();
         const stack = [];
-        stack.push(searchable.initialState);
+        let startNode = new Node(new State(searchable.startState.toString()), 'root', 'root');
+        stack.push(startNode);
 
         while (stack.length > 0) {
-            let leaf = stack.pop();
-            if (leaf === searchable.goalState) {
-                return leaf;
+            let leafNode = stack.pop();
+            if (leafNode === searchable.goalState.toString()) {
+                return leafNode;
             }
-            explored.add(leaf);
-            let transitions = searchable.getStateTransitions();
-            stack.push(transitions);
+            explored.add(leafNode.state.toString());
+            let transitions = searchable.getStateTransitions(leafNode); //This should be a list of 
+            let nodes = [];
+            for (const transition of transitions) {
+                if (explored.has(transition)) {
+                    let idx = transitions.indexOf(transition);
+                    transitions.splice(idx);
+                }
+                else {
+                    nodes.push(new Node())
+                }
+            }
+            stack.push(nodes);
         }
     }
-    // Initialize the frontier using intial state of the problem (getTransitionStates)
-    // If frontier (LIFO stack) empty then return failure.
-    // Choose leaf node and remove it from the frontier.
-    // If the node contains a goal state then return solution.
-    // Else add the node to the explored set.
-    // Only choose new leaf if not in the frontier or explored set.
+};
 
-
-    actions() {
-        // Generate all the possible child stat
-    }
-}
+export default DFS

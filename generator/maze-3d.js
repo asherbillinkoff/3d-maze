@@ -1,7 +1,7 @@
 import Cell from './cell.js'
 
 class Maze3D {
-    constructor(rows, columns, levels, maze) {
+    constructor(levels, columns, rows, maze) {
         this.rows = rows;
         this.columns = columns;
         this.levels = levels;
@@ -58,30 +58,33 @@ class Maze3D {
                 console.log(currRow);
                 currRow = '';
 
-                // Check the status of the backward walls (BwBorder) of the cell.
-                currBwBorder += '|';
-                for (let i = 0; i < this.columns; i++) {
-                    if (this.maze[k][j][i].walls.get('b') === true) {
-                        currBwBorder += '-';
-                    }
-                    else {
-                        currBwBorder += ' ';
-                    }
-
-                    if (i !== this.columns - 1) {
-                        currBwBorder += '+';
-                    }
+                if (j === this.rows - 1) {
+                    // Print the backward wall.
+                    console.log(header);
+                    header = '';
                 }
-                currBwBorder += '|';
-                console.log(currBwBorder);
-                currBwBorder = '';
-            }
+                else {
+                    // Check the status of the backward walls (BwBorder) of the cell.
+                    currBwBorder += '|';
+                    for (let i = 0; i < this.columns; i++) {
+                        if (this.maze[k][j][i].walls.get('b') === true) {
+                            currBwBorder += '-';
+                        }
+                        else {
+                            currBwBorder += ' ';
+                        }
 
-            // Print the backward wall.
-            console.log(header);
-            header = '';
+                        if (i !== this.columns - 1) {
+                            currBwBorder += '+';
+                        }
+                    }
+                    currBwBorder += '|';
+                    console.log(currBwBorder);
+                    currBwBorder = '';
+                }
+            }
         }
     }
-}
+};
 
 export default Maze3D;
