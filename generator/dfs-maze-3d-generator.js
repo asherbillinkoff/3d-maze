@@ -10,9 +10,9 @@ import Maze3D from "./maze-3d.js";
 class DFSMaze3DGenerator extends Maze3DGenerator {
     /**
      * DFS generator constructor.
-     * @param {*} levels Levels for the maze to generate.
-     * @param {*} columns Columns for the maze to generate.
-     * @param {*} rows Rows for the maze to generate.
+     * @param {Number} levels Levels for the maze to generate.
+     * @param {Number} columns Columns for the maze to generate.
+     * @param {Number} rows Rows for the maze to generate.
      */
     constructor(levels, columns, rows) {
         super(levels, columns, rows);
@@ -39,6 +39,11 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
         let goalCell = [Math.floor(Math.random() * this.levels),
                         Math.floor(Math.random() * this.columns),
                         Math.floor(Math.random() * this.rows)];
+        while (startCell.toString() === goalCell.toString()) {
+            goalCell = [Math.floor(Math.random() * this.levels),
+                        Math.floor(Math.random() * this.columns),
+                        Math.floor(Math.random() * this.rows)];
+        }
         
         // "directions" contains all possible directions for each maze cell.
         // "directionPairs" allows the method to fetch the complement of each
@@ -52,8 +57,10 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
 
 
         // Initiate the maze with empty cells.
+        const fillerCell = new Cell(0,0,0);
+        fillerCell.allWalls();
         for (let i = 0; i < this.levels; i++) {
-            maze.push(Array(this.rows).fill().map(() => Array(this.columns).fill(new Cell(0,0,0))));
+            maze.push(Array(this.rows).fill().map(() => Array(this.columns).fill(fillerCell)));
         }
         maze[z][y][x] = currCell;
 
@@ -72,6 +79,9 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
                     if (neighbour.slice(0,3).toString() === goalCell.toString()) {
                         nextCell = new Cell(neighbour[0], neighbour[1], neighbour[2]);
                         nextCell.updateStatus('g');
+                        nextCell.allWalls();
+                        nextCell.removeWall(directionPairs.get(neighbour[3]));
+                        currCell.removeWall(neighbour[3]);
                         maze[nextCell.position[0]][nextCell.position[1]][nextCell.position[2]] = nextCell;
                         return new Maze3D(startCell, goalCell, maze);
                     }

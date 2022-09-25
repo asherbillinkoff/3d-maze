@@ -32,7 +32,9 @@ class Maze3D {
 
             // Print the forward wall.
             for (let j = 0; j < this.columns; j++) {
-                header += " _";
+                header += " ";
+                // Prints the column number into the border.
+                header += String(j);
             }
             console.log(header);
 
@@ -41,7 +43,11 @@ class Maze3D {
                     currCell = this.maze[k][j][i];
 
                     // Check the wall status for the left side of the cell.
-                    if (i === 0 || currCell.walls.get('l') === true) {
+                    if (i === 0) {
+                        // Prints the row number into the border.
+                        currRow += String(j);
+                    }
+                    else if (currCell.walls.get('l') === true) {
                         currRow += '|';
                     }
                     else {

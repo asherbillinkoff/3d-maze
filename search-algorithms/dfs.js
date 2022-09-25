@@ -1,8 +1,13 @@
 import Searchable from './searchable.js'
 import Node from './node.js'
+import SearchAlgorithm from './search-algorithm.js';
 
-class DFS {
-    constructor() {}
+class DFS extends SearchAlgorithm {
+    #numOfNodes
+    constructor() {
+        super();
+        this.#numOfNodes = 0;
+    }
 
     /**
      * Depth first search solver class.
@@ -12,15 +17,14 @@ class DFS {
     search(searchable) {
         const explored = new Set();
         const stack = [];
-        let numOfNodes = 1;
+        this.#numOfNodes = 1;
         stack.push(searchable.startNode);
 
         while (stack.length > 0) {
             let leafNode = stack.pop();
-            numOfNodes += 1;
+            this.#numOfNodes += 1;
             if (leafNode.state.key.toString() === searchable.goalState.key.toString()) {
-            //if (leafNode.state.equals(searchable.goalState)) {
-                return [leafNode, numOfNodes];
+                return leafNode;
             }
             explored.add(leafNode.state.key.toString());
 
@@ -28,19 +32,16 @@ class DFS {
             // Each inner array (i.e. individual transition) will contain [state, action].
             let transitions = searchable.getStateTransitions(leafNode.state.key);
             for (const transition of transitions) {
-                if (explored.has(transition[0].key.toString())) {
-                    let idx = transitions.indexOf(transition);
-                    transitions.splice(idx);
-                }
-                else {
+                if (!explored.has(transition[0].key.toString())) {
                     stack.push(new Node(transition[0], transition[1], leafNode));
                 }
             }
         }
     }
-    // getNumberOfNodes() {
-    //     return this.#numOfNodes;
-    // }
+    
+    getNumberOfNodes() {
+        return this.#numOfNodes;
+    }
 };
 
 export default DFS;

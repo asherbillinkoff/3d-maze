@@ -21,9 +21,6 @@ class Cell {
     for (const direction of Cell.directions) {
       this.#walls.set(direction, true);
     }
-    this.#walls.set('x', false);    // Active user cell when true.
-    this.#walls.set('s', false);    // Starting cell when true.
-    this.#walls.set('g', false);    // Goal cell when true.
   } 
 
   addWall(direction, boolean) {
