@@ -1,40 +1,46 @@
-import State from './state.js'
 import Searchable from './searchable.js'
 import Node from './node.js'
 
 class DFS {
     constructor() {}
+
     /**
-     * 
-     * @param {Searchable} searchable Puzzle domain object
-     * @returns 
+     * Depth first search solver class.
+     * @param {Searchable} searchable Domain specific puzzle object.
+     * @returns {Node} leafNode The node located at the goal cell.
      */
     search(searchable) {
         const explored = new Set();
         const stack = [];
-        let startNode = new Node(new State(searchable.startState.toString()), 'root', 'root');
-        stack.push(startNode);
+        let numOfNodes = 1;
+        stack.push(searchable.startNode);
 
         while (stack.length > 0) {
             let leafNode = stack.pop();
-            if (leafNode === searchable.goalState.toString()) {
-                return leafNode;
+            numOfNodes += 1;
+            if (leafNode.state.key.toString() === searchable.goalState.key.toString()) {
+            //if (leafNode.state.equals(searchable.goalState)) {
+                return [leafNode, numOfNodes];
             }
-            explored.add(leafNode.state.toString());
-            let transitions = searchable.getStateTransitions(leafNode); //This should be a list of 
-            let nodes = [];
+            explored.add(leafNode.state.key.toString());
+
+            // "transitions" will be an array of arrays.
+            // Each inner array (i.e. individual transition) will contain [state, action].
+            let transitions = searchable.getStateTransitions(leafNode.state.key);
             for (const transition of transitions) {
-                if (explored.has(transition)) {
+                if (explored.has(transition[0].key.toString())) {
                     let idx = transitions.indexOf(transition);
                     transitions.splice(idx);
                 }
                 else {
-                    nodes.push(new Node())
+                    stack.push(new Node(transition[0], transition[1], leafNode));
                 }
             }
-            stack.push(nodes);
         }
     }
+    // getNumberOfNodes() {
+    //     return this.#numOfNodes;
+    // }
 };
 
-export default DFS
+export default DFS;

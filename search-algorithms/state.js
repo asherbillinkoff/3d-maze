@@ -1,5 +1,5 @@
 class State {
-    #key    //This will be maze.toString()
+    #key
     constructor(key) {
         if (this.constructor === State) {
           throw new Error('State cannot be initialized');
@@ -12,4 +12,6 @@ class State {
     equals(other) {
         return other instanceof State && this.#key === other.#key;
     }
-}
+};
+
+export default State;
