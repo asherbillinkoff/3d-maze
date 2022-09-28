@@ -39,8 +39,8 @@ class Cell {
   }
 
   updateStatus(value) {
-    if (value !== 'a' && value !== 's' && value !== 'g') {
-      throw new Error("Invalid cell status update. Only accepts 'a', 's', 'g'")
+    if (value !== 'v' && value !== 's' && value !== 'g') {
+      throw new Error("Invalid cell status update. Only accepts 'v', 's', 'g'")
     }
     this.#status.add(value);
   }

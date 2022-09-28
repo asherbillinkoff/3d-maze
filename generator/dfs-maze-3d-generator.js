@@ -39,6 +39,8 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
         let goalCell = [Math.floor(Math.random() * this.levels),
                         Math.floor(Math.random() * this.columns),
                         Math.floor(Math.random() * this.rows)];
+
+        // To make sure that the start and goal cells are never the same.
         while (startCell.toString() === goalCell.toString()) {
             goalCell = [Math.floor(Math.random() * this.levels),
                         Math.floor(Math.random() * this.columns),
@@ -56,7 +58,7 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
         visited.add([z, y, x].toString());
 
 
-        // Initiate the maze with empty cells.
+        // Initiate the maze with empty cell objects.
         const fillerCell = new Cell(0,0,0);
         fillerCell.allWalls();
         for (let i = 0; i < this.levels; i++) {

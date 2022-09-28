@@ -1,5 +1,5 @@
-import Searchable from './searchable.js'
 import Node from './node.js'
+import Searchable from './searchable.js'
 import SearchAlgorithm from './search-algorithm.js';
 
 class DFS extends SearchAlgorithm {
@@ -38,7 +38,7 @@ class DFS extends SearchAlgorithm {
             }
         }
     }
-    
+
     getNumberOfNodes() {
         return this.#numOfNodes;
     }

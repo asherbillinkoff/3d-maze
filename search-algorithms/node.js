@@ -7,10 +7,11 @@ class Node {
      * @param {String} action String representing the action taken to reach this state.
      * @param {Array} parent Array containing coordinates of the parent node.
      */
-    constructor(state, action, parent) {
+    constructor(state, action, parent, cost) {
         this.state = state;
         this.parent = parent;
         this.action = action;
+        this.cost = cost;
     }
 }
 

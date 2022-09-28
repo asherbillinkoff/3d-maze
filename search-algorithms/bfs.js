@@ -1,6 +1,5 @@
-import State from './state.js'
-import Searchable from './searchable.js'
 import Node from './node.js'
+import Searchable from './searchable.js'
 import SearchAlgorithm from './search-algorithm.js'
 
 class BFS extends SearchAlgorithm {
@@ -11,7 +10,7 @@ class BFS extends SearchAlgorithm {
     }
 
     /**
-     * Depth first search solver class.
+     * Breadth first search solver class.
      * @param {Searchable} searchable Domain specific puzzle object.
      * @returns {Node} leafNode The node located at the goal cell.
      */
