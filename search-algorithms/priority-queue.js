@@ -1,81 +1,102 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-exports.default = void 0;
-
-/**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/**
- * Priority queue that processes tasks in natural ordering (lower priority first)
- * according to the priority computed by the function passed in the constructor.
- *
- * FIFO ordering isn't guaranteed for tasks with the same priority.
- *
- * Worker specific tasks with the same priority as a non-worker specific task
- * are always processed first.
- */
 class PriorityQueue {
-  _queue = [];
-  _sharedQueue = new MinHeap();
+  #heap
+  #comparator
+  #top
 
-  constructor(_computePriority) {
-    this._computePriority = _computePriority;
+  constructor(comparator = (a, b) => a > b) {
+    this.#heap = [];
+    this.#comparator = comparator;
+    this.#top = 0;
   }
 
-  enqueue(task, workerId) {
-    if (workerId == null) {
-      this._enqueue(task, this._sharedQueue);
-    } else {
-      const queue = this._getWorkerQueue(workerId);
+  size() {
+    return this.#heap.length;
+  }
 
-      this._enqueue(task, queue);
+  isEmpty() {
+    return this.size() == 0;
+  }
+
+  peek() {
+    return this.#heap[this.#top];
+  }
+
+  push(...values) {
+    values.forEach(value => {
+      this.#heap.push(value);
+      this.#heapifyUp(this.size() - 1);
+    });
+    return this.size();
+  }
+
+  pop() {
+    const poppedValue = this.peek();
+    const bottom = this.size() - 1;
+    if (bottom > this.#top) {
+      this.#swap(this.#top, bottom);
+    }
+    this.#heap.pop();
+    this.#heapifyDown();
+    return poppedValue;
+  }
+
+  remove(value) {
+    const index = this.#heap.indexOf(value);
+    if (index != -1) {
+      this.#removeAt(index);
     }
   }
 
-  _enqueue(task, queue) {
-    const item = {
-      priority: this._computePriority(task.request[2], ...task.request[3]),
-      task
-    };
-    queue.add(item);
+  #parent(childIndex) {    
+    return Math.floor((childIndex - 1) / 2);
   }
 
-  dequeue(workerId) {
-    const workerQueue = this._getWorkerQueue(workerId);
+  #left(parentIndex) {
+    return (parentIndex * 2) + 1;   
+  }
 
-    const workerTop = workerQueue.peek();
+  #right(parentIndex) {
+    return (parentIndex * 2) + 2;
+  }
 
-    const sharedTop = this._sharedQueue.peek(); // use the task from the worker queue if there's no task in the shared queue
-    // or if the priority of the worker queue is smaller or equal to the
-    // priority of the top task in the shared queue. The tasks of the
-    // worker specific queue are preferred because no other worker can pick this
-    // specific task up.
+  #greater(i, j) {
+    return this.#comparator(this.#heap[i], this.#heap[j]);
+  }
 
-    if (
-      sharedTop == null ||
-      (workerTop != null && workerTop.priority <= sharedTop.priority)
+  #swap(i, j) {
+    [this.#heap[i], this.#heap[j]] = [this.#heap[j], this.#heap[i]];
+  }
+
+  #heapifyUp(index) {   
+    while (index < this.#top && this.#greater(index, this.#parent(index))) { // Changed comparator from >
+      this.#swap(index, this.#parent(index));
+      index = this.#parent(index);
+    }
+  }
+
+  #heapifyDown() {
+    let index = this.#top;
+
+    while (
+      (this.#left(index) < this.size() && this.#greater(index, this.#left(index))) ||
+      (this.#right(index) < this.size() && this.#greater(index, this.#right(index)))
     ) {
-      return workerQueue.poll()?.task ?? null;
+      let maxChild = (this.#right(index) < this.size() && this.#greater(this.#left(index), this.#right(index))) ? 
+        this.#right(index) : this.#left(index);
+      this.#swap(index, maxChild);
+      index = maxChild;
     }
-
-    return this._sharedQueue.poll().task;
   }
 
-  _getWorkerQueue(workerId) {
-    let queue = this._queue[workerId];
+  #removeAt(index) {
+    // Remove the last element and place it at the removed index
+    this.#heap[index] = this.#heap.pop();
 
-    if (queue == null) {
-      queue = this._queue[workerId] = new MinHeap();
-    }
-
-    return queue;
+    if (index > this.#top && this.#greater(index, this.#parent(index))) {
+      this.#heapifyUp(index);
+    } else {
+      this.#heapifyDown(index);
+    }    
   }
 };
 

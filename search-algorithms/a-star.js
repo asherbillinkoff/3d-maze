@@ -2,6 +2,7 @@ import Node from "./node.js";
 import PriorityQueue from "./priority-queue.js";
 import Searchable from "./searchable.js";
 import SearchAlgorithm from "./search-algorithm.js";
+import MazeState from "./maze-state.js";
 
 
 class AStar extends SearchAlgorithm{
@@ -17,27 +18,29 @@ class AStar extends SearchAlgorithm{
      * @returns {Node} leafNode The node located at the goal cell.
      */
     search(searchable) {
+        // Initiate required structures and compute heuristic for the start node.
         const explored = new Set();
-        const frontier = new Map(); // Keys = cost, Values = coordinates
+        const frontier = new PriorityQueue();
         this.#numOfNodes = 1;
         startCost = _computeCost(searchable.startState, searchable.startState, searchable.goalState);
-        frontier.push(startCost);
+        const startNode = new Node(new MazeState(searchable.startState), 'root', 'root', startCost)
+        frontier.push(startNode);
 
         while (frontier.size > 0) {
-            let lowestCostKey = _findNextKey(frontier);
-            currNode = frontier.get(lowestCostKey)[0];
+            let currNode = frontier.pop();
+            explored.add(currNode.state.toString());
             this.#numOfNodes += 1;
-            if (leafNode.state.key.toString() === searchable.goalState.key.toString()) {
-                return leafNode;
+            if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
+                return currNode;
             }
-            explored.add(leafNode.state.key.toString());
 
-            // "transitions" will be an array of arrays.
+            // "transitions" will be an array of valid moves.
             // Each inner array (i.e. individual transition) will contain [state, action].
-            let transitions = searchable.getStateTransitions(leafNode.state.key);
+            let transitions = searchable.getStateTransitions(currNode.state.key);
             for (const transition of transitions) {
                 if (!explored.has(transition[0].key.toString())) {
-                    stack.push(new Node(transition[0], transition[1], leafNode));
+                    let currNodeCost = this._computeCost(searchable.startState, transition[0].key, searchable.goalState);
+                    frontier.push(new Node(transition[0], transition[1], leafNode, currNodeCost));
                 }
             }
         }

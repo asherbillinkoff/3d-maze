@@ -5,7 +5,7 @@ import Node from "./node.js"
 class MazeDomain extends Searchable {
     constructor(startState, goalState, puzzle) {
         super(puzzle);
-        this.startNode = new Node(new MazeState(startState), 'root', 'root');
+        this.startNode = new Node(new MazeState(startState), 'root', 'root', cost);
         this.goalState = new MazeState(goalState.toString());
         this.puzzle = puzzle;
         this.levels = puzzle.length;
