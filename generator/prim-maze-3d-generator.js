@@ -1,7 +1,8 @@
 import Cell from './cell.js'
+import Maze3DGenerator from './maze-3d-generator.js';
 import Maze3D from './maze-3d.js';
 
-class PrimMaze3DGenerator {
+class PrimMaze3DGenerator extends Maze3DGenerator {
     /**
      * Prim maze generator constructor.
      * @param {Number} levels Levels for the maze to generate.
@@ -13,6 +14,14 @@ class PrimMaze3DGenerator {
     }
 
     generate() {
+        // Start with all walls.
+        // Pick a cell, add it to maze, add neighbours of currCell to list.
+        // While neighbours.length > 0.
+        // Pick a random node from neighbour list.
+        // Find the corresponding node ALREADY in the maze.
+        // Clear walls between that random neighbour and existing node.
+        // Add neighbours of random node to neighbours list.
+
         const maze = [];
         const visited = new Set();
         const neighbours = [];
@@ -53,16 +62,16 @@ class PrimMaze3DGenerator {
 
         maze[z][y][x] = currCell;
 
-        while (stack.length > 0) {
+        while (neighbours.length > 0) {
             for (let i = 0; i < directions.length; i++) {
 
-                // Add all valid neighbours to the stack.
+                // Add all valid neighbours to the "neighbours" list.
                 // Validate that all options are within the maze and are not in the visited set.
                 let neighbour = [z + directions[i][0], y + directions[i][1],
                                 x + directions[i][2], directions[i][3]];
-                if (neighbour[0] >= 0 && neighbour[0] < this.levels && neighbour[1] >= 0 && 
+                if (neighbour[0] >= 0 && neighbour[0] < this.levels && neighbour[1] >= 0 &&
                     neighbour[1] < this.columns && neighbour[2] >= 0 && neighbour[2] < this.rows && 
-                    !visited.has(neighbour.slice(0,3).toString()) === false) {
+                    !visited.has(neighbour.slice(0,3).toString())) {
                         neighbours.push(neighbour);
                 }
             }
@@ -83,13 +92,14 @@ class PrimMaze3DGenerator {
             }
             maze[z][y][x] = currCell;
 
-            // Remove the adjacent wall in the cell already in the maze.
+            // Remove the adjacent wall for the existing cell already in the maze.
             // Since currNeighbour contains the direction label we can search for
             // the proper direction vector in our "directions" array to find the
             // location of the previous cell.
+            let zp, yp, xp;
             for (const direction of directions) {
-                if (direction.includes(currNeighbour[3]) === true) {
-                    let [zp, yp, xp] = [z + direction[0], y + direction[1], x = direction[2]];
+                if (direction.includes(directionPairs.get(currNeighbour[3])) === true) {
+                    [zp, yp, xp] = [z + direction[0], y + direction[1], x + direction[2]];
                     break;
                 }
             }

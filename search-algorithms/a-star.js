@@ -2,7 +2,6 @@ import Node from "./node.js";
 import PriorityQueue from "./priority-queue.js";
 import Searchable from "./searchable.js";
 import SearchAlgorithm from "./search-algorithm.js";
-import MazeState from "./maze-state.js";
 
 
 class AStar extends SearchAlgorithm{
@@ -10,6 +9,7 @@ class AStar extends SearchAlgorithm{
     constructor() {
         super();
         this.#numOfNodes = 0;
+        this.type = 'A-Star';
     }
 
     /**
@@ -22,13 +22,13 @@ class AStar extends SearchAlgorithm{
         const explored = new Set();
         const frontier = new PriorityQueue();
         this.#numOfNodes = 1;
-        startCost = _computeCost(searchable.startState, searchable.startState, searchable.goalState);
-        const startNode = new Node(new MazeState(searchable.startState), 'root', 'root', startCost)
-        frontier.push(startNode);
+        let startCost = this._computeCost(searchable.startState.key, searchable.startState.key, searchable.goalState.key);
+        searchable.startNode.cost = startCost;
+        frontier.push(searchable.startNode);
 
-        while (frontier.size > 0) {
-            let currNode = frontier.pop();
-            explored.add(currNode.state.toString());
+        while (frontier.size() > 0) {
+            let currNode = frontier.pop()[1];
+            explored.add(currNode.state.key.toString());
             this.#numOfNodes += 1;
             if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
                 return currNode;
@@ -39,8 +39,8 @@ class AStar extends SearchAlgorithm{
             let transitions = searchable.getStateTransitions(currNode.state.key);
             for (const transition of transitions) {
                 if (!explored.has(transition[0].key.toString())) {
-                    //let currNodeCost = this._computeCost(searchable.startState, transition[0].key, searchable.goalState);
-                    //frontier.push(new Node(transition[0], transition[1], leafNode, currNodeCost));
+                    let currNodeCost = this._computeCost(searchable.startState.key, transition[0].key, searchable.goalState.key);
+                    frontier.push(new Node(transition[0], transition[1], currNode, currNodeCost));
                 }
             }
         }
@@ -50,15 +50,10 @@ class AStar extends SearchAlgorithm{
         const [zs, ys, xs] = startPosition;
         const [zc, yc, xc] = currPosition;
         const [zg, yg, xg] = goalPosition;
-        let gs = Math.abs(zs - zc) + Math.abs(ys - yc) + (xs - xc);
-        let hs = Math.abs(zg - zc) + Math.abs(yg - yc) + (xg - xc);
+        let gs = Math.abs(zs - zc) + Math.abs(ys - yc) + Math.abs(xs - xc);
+        let hs = Math.abs(zg - zc) + Math.abs(yg - yc) + Math.abs(xg - xc);
         let result = gs + hs;
         return result;
-    }
-
-    _findNextKey(frontier) {
-        const [lowestCostKey] = Object.entries(frontier).reduce(([v1, ], [v2, ]) => v1 - v2);
-        return lowestCostKey;
     }
     
     getNumberOfNodes() {

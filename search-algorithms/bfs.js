@@ -7,12 +7,13 @@ class BFS extends SearchAlgorithm {
     constructor() {
         super();
         this.#numOfNodes = 0;
+        this.type = 'BFS';
     }
 
     /**
      * Breadth first search solver class.
      * @param {Searchable} searchable Domain specific puzzle object.
-     * @returns {Node} leafNode The node located at the goal cell.
+     * @returns {Node} currNode The node located at the goal cell.
      */
     search(searchable) {
         const explored = new Set();
@@ -21,19 +22,19 @@ class BFS extends SearchAlgorithm {
         stack.push(searchable.startNode);
 
         while (stack.length > 0) {
-            let leafNode = stack.shift();
+            let currNode = stack.shift();
             this.#numOfNodes += 1;
-            if (leafNode.state.key.toString() === searchable.goalState.key.toString()) {
-                return leafNode;
+            if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
+                return currNode;
             }
-            explored.add(leafNode.state.key.toString());
+            explored.add(currNode.state.key.toString());
 
             // "transitions" will be an array of arrays.
             // Each inner array (i.e. individual transition) will contain [state, action].
-            let transitions = searchable.getStateTransitions(leafNode.state.key);
+            let transitions = searchable.getStateTransitions(currNode.state.key);
             for (const transition of transitions) {
                 if (!explored.has(transition[0].key.toString())) {
-                    stack.push(new Node(transition[0], transition[1], leafNode));
+                    stack.push(new Node(transition[0], transition[1], currNode));
                 }
             }
         }

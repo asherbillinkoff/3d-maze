@@ -23,7 +23,7 @@ class PriorityQueue {
 
   push(...values) {
     values.forEach(value => {
-      this.#heap.push(value);
+      this.#heap.push([value.cost, value]);
       this.#heapifyUp(this.size() - 1);
     });
     return this.size();
@@ -60,7 +60,7 @@ class PriorityQueue {
   }
 
   #greater(i, j) {
-    return this.#comparator(this.#heap[i], this.#heap[j]);
+    return this.#comparator(this.#heap[i][0], this.#heap[j][0]); // added [0]
   }
 
   #swap(i, j) {
@@ -68,7 +68,7 @@ class PriorityQueue {
   }
 
   #heapifyUp(index) {   
-    while (index < this.#top && this.#greater(index, this.#parent(index))) { // Changed comparator from >
+    while (index < this.#top && this.#greater(index, this.#parent(index))) {
       this.#swap(index, this.#parent(index));
       index = this.#parent(index);
     }
