@@ -39,8 +39,8 @@ class AStar extends SearchAlgorithm{
             let transitions = searchable.getStateTransitions(currNode.state.key);
             for (const transition of transitions) {
                 if (!explored.has(transition[0].key.toString())) {
-                    let currNodeCost = this._computeCost(searchable.startState, transition[0].key, searchable.goalState);
-                    frontier.push(new Node(transition[0], transition[1], leafNode, currNodeCost));
+                    //let currNodeCost = this._computeCost(searchable.startState, transition[0].key, searchable.goalState);
+                    //frontier.push(new Node(transition[0], transition[1], leafNode, currNodeCost));
                 }
             }
         }
