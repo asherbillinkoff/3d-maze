@@ -12,7 +12,7 @@ class DFS extends SearchAlgorithm {
     /**
      * Depth first search solver class.
      * @param {Searchable} searchable Domain specific puzzle object.
-     * @returns {Node} currNode The node located at the goal cell.
+     * @returns {Node, Set} Returns an array containing the goalNode and the explored set.
      */
     search(searchable) {
         const explored = new Set();
@@ -20,12 +20,13 @@ class DFS extends SearchAlgorithm {
         this.#numOfNodes = 1;
         stack.push(searchable.startNode);
         this.type = 'DFS';
+        let goalNode;
 
         while (stack.length > 0) {
             let currNode = stack.pop();
             this.#numOfNodes += 1;
             if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
-                return currNode;
+                goalNode = currNode;
             }
             explored.add(currNode.state.key.toString());
 
@@ -38,6 +39,7 @@ class DFS extends SearchAlgorithm {
                 }
             }
         }
+        return [goalNode, explored];
     }
 
     getNumberOfNodes() {

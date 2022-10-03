@@ -13,11 +13,12 @@ class BFS extends SearchAlgorithm {
     /**
      * Breadth first search solver class.
      * @param {Searchable} searchable Domain specific puzzle object.
-     * @returns {Node} currNode The node located at the goal cell.
+     * @returns {Node, Set} Returns an array containing the goalNode and the explored set.
      */
     search(searchable) {
         const explored = new Set();
         const stack = [];
+        let goalNode;
         this.#numOfNodes = 1;
         stack.push(searchable.startNode);
 
@@ -25,7 +26,7 @@ class BFS extends SearchAlgorithm {
             let currNode = stack.shift();
             this.#numOfNodes += 1;
             if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
-                return currNode;
+                goalNode = currNode;
             }
             explored.add(currNode.state.key.toString());
 
@@ -38,6 +39,7 @@ class BFS extends SearchAlgorithm {
                 }
             }
         }
+        return [goalNode, explored];
     }
 
     getNumberOfNodes() {
