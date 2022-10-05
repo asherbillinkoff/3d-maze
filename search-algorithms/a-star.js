@@ -15,7 +15,7 @@ class AStar extends SearchAlgorithm{
     /**
      * A-Star search solver class.
      * @param {Searchable} searchable Domain specific puzzle object.
-     * @returns {Node} leafNode The node located at the goal cell.
+     * @returns {Node, Set} Returns an array containing the goalNode and the explored set.
      */
     search(searchable) {
         // Initiate required structures and compute heuristic for the start node.
@@ -25,13 +25,14 @@ class AStar extends SearchAlgorithm{
         let startCost = this._computeCost(searchable.startState.key, searchable.startState.key, searchable.goalState.key);
         searchable.startNode.cost = startCost;
         frontier.push(searchable.startNode);
+        let goalNode;
 
         while (frontier.size() > 0) {
             let currNode = frontier.pop()[1];
             explored.add(currNode.state.key.toString());
             this.#numOfNodes += 1;
             if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
-                return currNode;
+                goalNode = currNode;
             }
 
             // "transitions" will be an array of valid moves.
@@ -44,6 +45,7 @@ class AStar extends SearchAlgorithm{
                 }
             }
         }
+        return [goalNode, explored];
     }
 
     _computeCost(startPosition, currPosition, goalPosition) {

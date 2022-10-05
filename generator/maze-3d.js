@@ -5,7 +5,7 @@
 class Maze3D {
     /**
      * 
-     * @param {Array} startCell Array contain start coordinates.
+     * @param {Array} startCell Array containing start coordinates.
      * @param {Array} goalCell Array containg goal cell coordinates.
      * @param {Array} maze Array containing the maze.
      */
