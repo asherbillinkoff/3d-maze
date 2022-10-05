@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <style>
 
         @font-face {
@@ -16,7 +17,7 @@
         }
 
         * {
-        box-sizing: border-box;
+            box-sizing: border-box;
         }
 
         header {
@@ -75,12 +76,13 @@
         #maze-container {
             min-width: 10em;
             min-height: 10em;
-            border: 3px solid cyan;
+            /* border: 3px solid cyan; */
         }
 
         .level {
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .row {
@@ -94,10 +96,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: .8em;
             color: cyan;
-            min-width: 1.5em;
-            min-height: 1.5em;
+            height: 32px;
+            width: 32px;
             border-collapse: collapse;
+            padding: 0;
         }
     </style>
 </head>
@@ -133,7 +137,7 @@
                     </select>
                 </li>
                 <li>
-                    <button type="button" id="start-game" autofocus><strong>Start New Game</strong></button>
+                    <button type="button" id="start-game"><strong>Start New Game</strong></button>
                 </li>
                 <li>
                     <label for="search-algo">Search Algo:</label>

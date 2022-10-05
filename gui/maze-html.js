@@ -3,13 +3,14 @@ import SimpleMaze3DGenerator from "../generator/simple-maze-3d-generator.js";
 
 
 class MazeHTML {
-    constructor(elem, levels, cols, rows, genAlgo) {
+    constructor(elem, levels, cols, rows, genAlgo, playerIcon) {
         this.elem = elem;
         this.levels = levels;
         this.cols = cols;
         this.rows = rows;
         this.genAlgo = genAlgo;
         this.startCell = [];
+        this.icon = playerIcon
     }
 
     createMaze() {
@@ -32,8 +33,7 @@ class MazeHTML {
         for (let k = 0; k < this.levels; k++) {
             const level = document.createElement('div');
             level.className = 'level';
-            // level.style.display = 'grid';
-            // level.style.gridTemplateColumns = 'repeat(' + String(this.cols) + ', 1fr)';
+            level.id = 'Level' + String(k + 1);
             if (k !== 0) {
                 level.hidden = true;
             }
@@ -59,16 +59,16 @@ class MazeHTML {
                     for (const direction of directions) {
                         if (generatedMaze.maze[k][j][i].walls.get(direction)) {
                             if (direction === 'r') {
-                                cell.style.borderRight = 'cyan solid 1px';
+                                cell.style.borderRight = 'cyan solid 0.5px';
                             }
                             else if (direction === 'l') {
-                                cell.style.borderLeft = 'cyan solid 1px';
+                                cell.style.borderLeft = 'cyan solid 0.5px';
                             }
                             else if (direction === 'f') {
-                                cell.style.borderTop = 'cyan solid 1px';
+                                cell.style.borderTop = 'cyan solid 0.5px';
                             }
                             else if (direction === 'b') {
-                                cell.style.borderBottom = 'cyan solid 1px';    
+                                cell.style.borderBottom = 'cyan solid 0.5px';    
                             }
                             else if (!generatedMaze.maze[k][j][i].walls.get('u') &&
                                      !generatedMaze.maze[k][j][i].walls.get('d')) {
