@@ -3,7 +3,11 @@ import PriorityQueue from "./priority-queue.js";
 import Searchable from "./searchable.js";
 import SearchAlgorithm from "./search-algorithm.js";
 
-
+/**
+ * @classdesc This class implements the A-Star algorithm for solving search problems.
+ * This algorithm utilizes a heuristic function to expedite the solving process.
+ * See the _computeCost function below for more information.
+ */
 class AStar extends SearchAlgorithm{
     #numOfNodes
     constructor() {
@@ -18,7 +22,7 @@ class AStar extends SearchAlgorithm{
      * @returns {Node, Set} Returns an array containing the goalNode and the explored set.
      */
     search(searchable) {
-        // Initiate required structures and compute heuristic for the start node.
+        // Initiate required data structures and compute heuristic for the start node.
         const explored = new Set();
         const frontier = new PriorityQueue();
         this.#numOfNodes = 1;
@@ -27,6 +31,7 @@ class AStar extends SearchAlgorithm{
         frontier.push(searchable.startNode);
         let goalNode;
 
+        // Expand the frontier until no nodes left to be explored.
         while (frontier.size() > 0) {
             let currNode = frontier.pop()[1];
             explored.add(currNode.state.key.toString());
@@ -35,7 +40,7 @@ class AStar extends SearchAlgorithm{
                 goalNode = currNode;
             }
 
-            // "transitions" will be an array of valid moves.
+            // "transitions" will be an array of valid moves computed by the maze adapter (searchable).
             // Each inner array (i.e. individual transition) will contain [state, action].
             let transitions = searchable.getStateTransitions(currNode.state.key);
             for (const transition of transitions) {
@@ -48,6 +53,14 @@ class AStar extends SearchAlgorithm{
         return [goalNode, explored];
     }
 
+    /**
+     * This helper method computes the cost (heuristic) of the current cell by
+     * summing the distance from the start + distance left until the goal.
+     * @param {Array} startPosition Array containing start cell coordinates.
+     * @param {Array} currPosition Array containing start cell coordinates.
+     * @param {Array} goalPosition Array containing start cell coordinates.
+     * @returns 
+     */
     _computeCost(startPosition, currPosition, goalPosition) {
         const [zs, ys, xs] = startPosition;
         const [zc, yc, xc] = currPosition;
@@ -58,6 +71,8 @@ class AStar extends SearchAlgorithm{
         return result;
     }
     
+    // This method returns the variable which contains the number of nodes
+    // visited throughout the solving algorithm.
     getNumberOfNodes() {
         return this.#numOfNodes;
     }

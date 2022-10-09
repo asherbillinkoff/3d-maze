@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 class SearchAlgorithm {
     constructor() {}
     search(searchable) {}

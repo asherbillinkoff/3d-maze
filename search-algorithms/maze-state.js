@@ -1,5 +1,10 @@
 import State from "./state.js";
 
+/**
+ * @classdesc This class stores the state of the maze while evaluating future
+ * moves to be made. These states are later included within the
+ * the Node object.
+ */
 class MazeState extends State {
     #key
     /**
