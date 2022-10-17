@@ -68,6 +68,10 @@
             margin-left: 98px;
         }
 
+        input {
+            width: 10em;
+        }
+
         .game-btn {
             min-width: 10em;
         }
@@ -103,7 +107,7 @@
         <h1>ASHER'S 3D MAZE</h1>
     </header>
     <section id="main-container">
-        <form>
+        <form id="form">
             <ul>
                 <li>
                     <label for="maze-name">Name:</label>
@@ -111,15 +115,15 @@
                 </li>
                 <li>
                     <label for="rows">Rows:</label>
-                    <input type="number" id="rows" text="rows" value="5">
+                    <input type="number" id="rows" text="rows" min="3" max="50" value="5">
                 </li>
                 <li>
                     <label for="cols">Cols:</label>
-                    <input type="number" id="cols" text="cols" value="5">
+                    <input type="number" id="cols" text="cols" min="3" max="40" value="5">
                 </li>
                 <li>
                     <label for="levels">Levels:</label>
-                    <input type="number" id="levels" text="levels" value="1">
+                    <input type="number" id="levels" text="levels" min="1" max="30" value="1">
                 </li>
                 <li>
                     <label for="gen-algo">Gen Algo:</label>
@@ -172,7 +176,6 @@
     <script type="module" src="/generator/cell.js"></script>
 
     <script type="module" src="/gui/maze-html.js"></script>
-    <!-- <script type="module" src="maze-main-old.js"></script> -->
     <script type="module" src="/gui-main.js"></script>
 </body>
 

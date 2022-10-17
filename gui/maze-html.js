@@ -20,7 +20,7 @@ class MazeHTML {
     ]);
 
     /**
-     * 
+     * Maze HTML constructor.
      * @param {HTMLElement} elem HTML node which the entire maze GUI is appended to.
      * @param {Number} levels Number of levels to be in the maze.
      * @param {Number} cols Number of columns to be in the maze.
@@ -132,10 +132,6 @@ class MazeHTML {
                             else if (direction === 'b') {
                                 cell.style.borderBottom = 'cyan solid 0.5px';
                             }
-                            else if (!this.maze.maze[k][j][i].walls.get('u') && !this.maze.maze[k][j][i].walls.get('d')) {      // Why arent you working!KJG!J!YF
-                                cell.textContent += '*';
-                                cell.style.color = 'blue';
-                            }
                             else if (!this.maze.maze[k][j][i].walls.get('u')) {
                                 cell.textContent += '↑';
                                 cell.style.color = 'green';
@@ -145,19 +141,30 @@ class MazeHTML {
                                 cell.style.color = 'red';
                             }
                         }
+                        // Separate if statement for finding the double arrowed cells.
+                        else if (!this.maze.maze[k][j][i].walls.get('u') && !this.maze.maze[k][j][i].walls.get('d')) {
+                            if (cell.textContent === '') {
+                                cell.textContent += '↕';
+                                cell.style.color = 'blue';
+                            }
+                        }
                     }
                 }
             }
             gridContainer.appendChild(level);
         }
         this.elem.appendChild(mazeHTML);
-        this._initializePlayer();
+        this.initializePlayer();
     }
 
     // This method creates the HTML icon element for the player and places it on
     // the starting cell.
-    _initializePlayer() {
-        // Initialize the player icon element.
+    initializePlayer() {
+
+        // Initialize the player icon element if no player exists.
+        if (document.getElementById('player')) {
+            const player = document.getElementById('player').remove();
+        }
         const player = document.createElement('i');
         player.className = this.icon;
         player.id = 'player';
@@ -175,17 +182,16 @@ class MazeHTML {
         this.runMaze();
     }
 
-    // This method contains the directional pad event listener for handling user
-    // move requests.
+    // This method contains all event listeners required for running the game.
+    // This includes directional pad, reset game, show hint, save game and solve game.
     runMaze() {
         const player = document.getElementById('player');
         const gridContainer = document.getElementById('gridContainer');     // Why does my code still work when this isn't here?
         let currCell = this.startCell;
-        let emFactor = 2;
+        let currLevel = document.getElementsByClassName('activeLevel')[0];
 
         // DIRECTIONAL PAD LISTENER // 
         document.addEventListener('keydown', e => {
-            const currLevel = document.getElementsByClassName('activeLevel')[0];
             let dirArray = MazeHTML.directions.get(e.key)[0];
             let dirLetter = MazeHTML.directions.get(e.key)[1];
 
@@ -195,7 +201,7 @@ class MazeHTML {
 
             else if ((e.key === 'PageUp' && currCell[0] >= 0 && currCell[0] < this.levels - 1 && !this.checkMove(currCell, dirLetter, dirArray)) ||
                 (e.key === 'PageDown' && currCell[0] > 0 && currCell[0] < this.levels && !this.checkMove(currCell, dirLetter, dirArray))) {
-                currCell = this.changeLevel(currCell, currLevel, e);
+                [currCell, currLevel] = this.changeLevel(currCell, currLevel, e);
             }
         });
 
@@ -205,19 +211,20 @@ class MazeHTML {
         solveBtn.addEventListener('click', () => {
             let solvedPath = this.solveMaze(currCell);
             console.log(solvedPath);
-            // player.style.transition = 'left';
-            // player.style.transitionDelay = '1s';
-            // player.style.transitionTimingFunction = 'ease'
-            // player.style.transition = 'top';
-            // player.style.transitionDelay = '1s';
             let i = solvedPath.length - 1;
             const timer = setInterval(() => {
+
+                // If the next move on the path is on the same level then
+                // the function won't need to change the active level.
                 if (solvedPath[i][0] === solvedPath[i - 1][0]) {
                     const newX = (solvedPath[i][2] * 2 + 0.5);
                     const newY = (solvedPath[i][1] * 2 + 0.5);
                     player.style.left = newX + 'em';
                     player.style.top = newY + 'em';
                 }
+
+                // If the next move is on the lower level then the display will have
+                // to be adjusted.
                 else if (solvedPath[i][0] - solvedPath[i - 1][0] > 0) {
                     const currLevel = document.getElementsByClassName('activeLevel')[0];
                     currLevel.className = 'hiddenLevel';
@@ -229,6 +236,9 @@ class MazeHTML {
                     let levelTitle = document.getElementById('currLevelTitle');
                     levelTitle.textContent = 'Level ' + (currCell[0]);
                 }
+
+                // If the next move is on the level above then the display will have
+                // to be adjusted.
                 else if (solvedPath[i][0] - solvedPath[i - 1][0] < 0) {
                     const currLevel = document.getElementsByClassName('activeLevel')[0];
                     currLevel.className = 'hiddenLevel';
@@ -249,13 +259,12 @@ class MazeHTML {
 
         // RESET GAME BUTTON LISTENER //
         const resetBtn = document.getElementById('reset-game');
-        resetBtn.addEventListener('click', () => {
-            player.remove();
-            this._initializePlayer();
+        resetBtn.addEventListener('click', e => {
+            this.initializePlayer();
+            [currCell, currLevel] = this.changeLevel(currCell, currLevel);
         });
 
         // SHOW HINT BUTTON LISTENER //
-        // TODO: Multilevel mazes are flashing multiple cells green.
         const showHintBtn = document.getElementById('show-hint');
         showHintBtn.addEventListener('click', () => {
             let solvedPath = this.solveMaze(currCell);
@@ -268,27 +277,95 @@ class MazeHTML {
             const flashHint = setTimeout(() => {
                 hintCell.style.backgroundColor = 'transparent';
             }, 1000);
+
         });
 
         // SAVE GAME BUTTON LISTENER //
         const saveGameBtn = document.getElementById('save-game');
         saveGameBtn.addEventListener('click', () => {
             saveGameBtn()
-
         });
     }
 
-    saveGame() {
-        const nameInput = document.getElementById('maze-name');
-
-    }
-
-    loadGame(name) {
-        if (!this.savedGames.get(nameInput)) {
-            alert('No game saved with that name.')
+    // Method will check if the next move is the goal cell, if not will return the boolean value of the 
+    // wall en route to the next cell. Returns 'false' if there is no wall, 'true' if there is a wall.
+    checkMove(currCell, dirLetter, dirArray) {
+        if (!this.maze.maze[currCell[0]][currCell[1]][currCell[2]].walls.get(dirLetter)) {
+            let checkCell = [currCell[0] + dirArray[0], currCell[1] + dirArray[1], currCell[2] + dirArray[2]];
+            if (checkCell.toString() === this.goalCell.toString()) {
+                this.elem.textContent = '';
+                const winMsg = document.createElement('p');
+                winMsg.textContent = 'YOU WON!';
+                this.elem.style.display = 'flexbox';
+                this.elem.style.flexDirection = 'column';
+                this.elem.style.maxWidth = '400px';
+                this.elem.style.justifyContent = 'center';
+                this.elem.style.textAlign = 'center';
+                this.elem.style.color = 'cyan';
+                const success = document.createElement('img');
+                success.src = './images/giphy.gif';
+                success.style.maxWidth = '200px';
+                this.elem.appendChild(winMsg);
+                this.elem.appendChild(success);
+            }
+            else {
+                return this.maze.maze[currCell[0]][currCell[1]][currCell[2]].walls.get(dirLetter);
+            }
+        }
+        else {
+            return true;
         }
     }
 
+    // Method is responsible for moving the player only on the 2D plane. This is
+    // only when a move is made within the same level of the maze.
+    moveCell(player, currCell, dirArray, e) {
+        e.preventDefault();
+        let currX = Number(player.style.left.slice(0, -2));
+        let currY = Number(player.style.top.slice(0, -2));
+        let newX = (currX + (dirArray[2] * this.emFactor));
+        let newY = (currY + (dirArray[1] * this.emFactor));
+        currCell = [currCell[0], currCell[1] + dirArray[1],
+        currCell[2] + dirArray[2]];
+        player.style.left = newX + 'em';
+        player.style.top = newY + 'em';
+        return currCell;
+    }
+
+    // Method is responsible for moving the player between 3D levels (up and down).
+    // Takes care of hiding and activating the appropriate levels.
+    changeLevel(currCell, currLevel, e) {
+        if (e.key.includes("Page")) {
+            e.preventDefault();
+            currLevel.className = 'hiddenLevel';
+            currLevel.style.display = 'none';
+            let nextLevelID = 'Level' + (currCell[0] + MazeHTML.directions.get(e.key)[0][0]);
+            let nextLevel = document.getElementById(nextLevelID);
+            nextLevel.className = 'activeLevel';
+            nextLevel.style.display = 'flex';
+            currCell = [currCell[0] + MazeHTML.directions.get(e.key)[0][0], currCell[1], currCell[2]];
+            let levelTitle = document.getElementById('currLevelTitle');
+            levelTitle.textContent = 'Level ' + (currCell[0]);
+            return [currCell, nextLevel];
+        }
+        // Intended for use by the 'Reset Game' button.
+        else {
+            currLevel.className = 'hiddenLevel';
+            currLevel.style.display = 'none';
+            let nextLevelID = 'Level' + this.startCell[0];
+            let nextLevel = document.getElementById(nextLevelID);
+            nextLevel.className = 'activeLevel';
+            nextLevel.style.display = 'flex';
+            currCell = [this.startCell[0], this.startCell[1], this.startCell[2]];
+            let levelTitle = document.getElementById('currLevelTitle');
+            levelTitle.textContent = 'Level ' + (currCell[0]);
+            return [currCell, nextLevel];
+        }
+    }
+
+    // This method utilizes the solving algorithms to find the fastest path from
+    // goal cell back to current location. That path is then returned to the game
+    // to animate the solution to the goal cell.
     solveMaze(currCell) {
         const algos = new Map([
             ['a-star', new AStar()],
@@ -309,50 +386,14 @@ class MazeHTML {
         return path;
     }
 
-    moveCell(player, currCell, dirArray, e) {
-        e.preventDefault();
-        let currX = Number(player.style.left.slice(0, -2));
-        let currY = Number(player.style.top.slice(0, -2));
-        let newX = (currX + (dirArray[2] * this.emFactor));
-        let newY = (currY + (dirArray[1] * this.emFactor));
-        currCell = [currCell[0], currCell[1] + dirArray[1],
-        currCell[2] + dirArray[2]];
-        player.style.left = newX + 'em';
-        player.style.top = newY + 'em';
-        return currCell;
+    saveGame() {
+        const nameInput = document.getElementById('maze-name');
+
     }
 
-    changeLevel(currCell, currLevel, e) {
-        e.preventDefault();
-        currLevel.className = 'hiddenLevel';
-        currLevel.style.display = 'none';
-        const nextLevelID = 'Level' + (currCell[0] + MazeHTML.directions.get(e.key)[0][0]);
-        let nextLevel = document.getElementById(nextLevelID);
-        nextLevel.className = 'activeLevel';
-        nextLevel.style.display = 'flex';
-        currCell = [currCell[0] + MazeHTML.directions.get(e.key)[0][0], currCell[1], currCell[2]];
-        let levelTitle = document.getElementById('currLevelTitle');
-        levelTitle.textContent = 'Level ' + (currCell[0]);
-        return currCell;
-    }
-
-    // Method will check if the next move is goal cell, if not will return the boolean value of the 
-    // wall en route to the next cell. 'false' if there is no wall, 'true' if there is a wall.
-    checkMove(currCell, dirLetter, dirArray) {
-        if (!this.maze.maze[currCell[0]][currCell[1]][currCell[2]].walls.get(dirLetter)) {
-            let checkCell = [currCell[0] + dirArray[0], currCell[1] + dirArray[1], currCell[2] + dirArray[2]];
-            if (checkCell.toString() === this.goalCell.toString()) {
-                this.elem.textContent = 'YOU SOLVED THE MAZE WAY TO GO!!!';
-                this.elem.style.justifyContent = 'center';
-                this.elem.style.alignItems = 'center';
-                this.elem.style.color = 'cyan';
-            }
-            else {
-                return this.maze.maze[currCell[0]][currCell[1]][currCell[2]].walls.get(dirLetter);
-            }
-        }
-        else {
-            return true;
+    loadGame(name) {
+        if (!this.savedGames.get(nameInput)) {
+            alert('No game saved with that name.')
         }
     }
 };
