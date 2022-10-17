@@ -19,7 +19,7 @@ class AStar extends SearchAlgorithm{
     /**
      * A-Star search solver class.
      * @param {Searchable} searchable Domain specific puzzle object.
-     * @returns {Node, Set} Returns an array containing the goalNode and the explored set.
+     * @returns {Node, Set} Returns an array containing the goal Node object.
      */
     search(searchable) {
         // Initiate required data structures and compute heuristic for the start node.
@@ -29,7 +29,6 @@ class AStar extends SearchAlgorithm{
         let startCost = this._computeCost(searchable.startState.key, searchable.startState.key, searchable.goalState.key);
         searchable.startNode.cost = startCost;
         frontier.push(searchable.startNode);
-        let goalNode;
 
         // Expand the frontier until no nodes left to be explored.
         while (frontier.size() > 0) {
@@ -37,7 +36,7 @@ class AStar extends SearchAlgorithm{
             explored.add(currNode.state.key.toString());
             this.#numOfNodes += 1;
             if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
-                goalNode = currNode;
+                return currNode;
             }
 
             // "transitions" will be an array of valid moves computed by the maze adapter (searchable).
@@ -50,7 +49,6 @@ class AStar extends SearchAlgorithm{
                 }
             }
         }
-        return [goalNode, explored];
     }
 
     /**
@@ -59,7 +57,7 @@ class AStar extends SearchAlgorithm{
      * @param {Array} startPosition Array containing start cell coordinates.
      * @param {Array} currPosition Array containing start cell coordinates.
      * @param {Array} goalPosition Array containing start cell coordinates.
-     * @returns 
+     * @returns {number} Sum of the cost.
      */
     _computeCost(startPosition, currPosition, goalPosition) {
         const [zs, ys, xs] = startPosition;

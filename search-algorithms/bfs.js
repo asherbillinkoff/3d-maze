@@ -2,6 +2,11 @@ import Node from './node.js'
 import Searchable from './searchable.js'
 import SearchAlgorithm from './search-algorithm.js'
 
+/**
+ * @classdesc This class implements the Breadth First Sarch (BFS) algorithm for
+ * solving search problems. It exapnds the shallowest node first and utilizes a
+ * FIFO queue for it's frontier.
+ */
 class BFS extends SearchAlgorithm {
     #numOfNodes
     constructor() {
@@ -11,22 +16,22 @@ class BFS extends SearchAlgorithm {
     }
 
     /**
-     * Breadth first search solver class.
+     * BFS solver class.
      * @param {Searchable} searchable Domain specific puzzle object.
      * @returns {Node, Set} Returns an array containing the goalNode and the explored set.
      */
     search(searchable) {
         const explored = new Set();
         const stack = [];
-        let goalNode;
         this.#numOfNodes = 1;
         stack.push(searchable.startNode);
 
+        // Expand the frontier until no nodes left to be explored.
         while (stack.length > 0) {
             let currNode = stack.shift();
             this.#numOfNodes += 1;
             if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
-                goalNode = currNode;
+                return currNode;
             }
             explored.add(currNode.state.key.toString());
 
@@ -39,9 +44,10 @@ class BFS extends SearchAlgorithm {
                 }
             }
         }
-        return [goalNode, explored];
     }
 
+    // This method returns the variable which contains the number of nodes
+    // visited throughout the solving algorithm.
     getNumberOfNodes() {
         return this.#numOfNodes;
     }

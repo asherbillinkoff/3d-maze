@@ -2,6 +2,11 @@ import Node from './node.js'
 import Searchable from './searchable.js'
 import SearchAlgorithm from './search-algorithm.js';
 
+/**
+ * @classdesc This class implements the Depth First Sarch (DFS) algorithm for
+ * solving search problems. It exapnds the deepest node first and utilizes a
+ * LIFO queue (stack) for it's frontier.
+ */
 class DFS extends SearchAlgorithm {
     #numOfNodes
     constructor() {
@@ -10,9 +15,9 @@ class DFS extends SearchAlgorithm {
     }
 
     /**
-     * Depth first search solver class.
+     * DFS solver class.
      * @param {Searchable} searchable Domain specific puzzle object.
-     * @returns {Node, Set} Returns an array containing the goalNode and the explored set.
+     * @returns {Node, Set} Returns an array containing the goal Node object.
      */
     search(searchable) {
         const explored = new Set();
@@ -20,13 +25,13 @@ class DFS extends SearchAlgorithm {
         this.#numOfNodes = 1;
         stack.push(searchable.startNode);
         this.type = 'DFS';
-        let goalNode;
 
+        // Expand the frontier until no nodes left to be explored.
         while (stack.length > 0) {
             let currNode = stack.pop();
             this.#numOfNodes += 1;
             if (currNode.state.key.toString() === searchable.goalState.key.toString()) {
-                goalNode = currNode;
+                return currNode;
             }
             explored.add(currNode.state.key.toString());
 
@@ -39,9 +44,10 @@ class DFS extends SearchAlgorithm {
                 }
             }
         }
-        return [goalNode, explored];
     }
 
+    // This method returns the variable which contains the number of nodes
+    // visited throughout the solving algorithm.
     getNumberOfNodes() {
         return this.#numOfNodes;
     }

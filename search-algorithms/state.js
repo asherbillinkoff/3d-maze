@@ -1,3 +1,9 @@
+
+/**
+ * @classdesc Abstract class for the state object which stores the state of a
+ * puzzle while evaluating future moves to be made. These states are later included
+ * within a Node object.
+ */
 class State {
     #key
     constructor(key) {

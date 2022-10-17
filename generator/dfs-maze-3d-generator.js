@@ -3,7 +3,7 @@ import Cell from "./cell.js";
 import Maze3D from "./maze-3d.js";
 
 /**
- * @classdesc This is a Depth First Search maze generation algorithm.
+ * @classdesc This is a Depth First Search (DFS) maze generation algorithm.
  * In order to add variation to the search pattern, the neighbouring cells
  * are explored in a random order.
  */
@@ -19,8 +19,8 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
     }
 
     /**
-     * Generate the maze.
-     * @returns {Maze3D} Object containing the maze and it's size parameters.
+     * Method to generate the maze.
+     * @returns {Maze3D} Object containing the maze and start/goal locations.
      */
     generate() {
         const maze = [];
@@ -29,22 +29,22 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
 
         // Select random cells for the maze start and goal. Mark cell with an 's' for start.
         let startCell = [Math.floor(Math.random() * this.levels),
-                         Math.floor(Math.random() * this.columns),
-                         Math.floor(Math.random() * this.rows)];
+                         Math.floor(Math.random() * this.rows),
+                         Math.floor(Math.random() * this.columns)];
         let [z, y, x] = startCell;
         let currCell = new Cell(z, y, x);
         currCell.updateStatus('s');
         currCell.allWalls();
         stack.push(currCell);
         let goalCell = [Math.floor(Math.random() * this.levels),
-                        Math.floor(Math.random() * this.columns),
-                        Math.floor(Math.random() * this.rows)];
+                        Math.floor(Math.random() * this.rows),
+                        Math.floor(Math.random() * this.columns)];
 
         // To make sure that the start and goal cells are never the same.
         while (startCell.toString() === goalCell.toString()) {
             goalCell = [Math.floor(Math.random() * this.levels),
-                        Math.floor(Math.random() * this.columns),
-                        Math.floor(Math.random() * this.rows)];
+                        Math.floor(Math.random() * this.rows),
+                        Math.floor(Math.random() * this.columns)];
         }
         
         // "directions" contains all possible directions for each maze cell.
@@ -58,23 +58,22 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
         visited.add([z, y, x].toString());
 
 
-        // Initiate the maze with empty cell objects.
+        // Initiate the maze with empty cell objects with all walls set to 'true'.
         const fillerCell = new Cell(0,0,0);
         fillerCell.allWalls();
         for (let i = 0; i < this.levels; i++) {
             maze.push(Array(this.rows).fill().map(() => Array(this.columns).fill(fillerCell)));
         }
         maze[z][y][x] = currCell;
-
         while (stack.length > 0) {
             for (let i = 0; i < directions.length; i++) {
 
-                // Append the potential move direction coordinates to the current cell location.
+                // Add the potential move direction coordinates to the current cell location.
                 // Validate that all potential neighbours are within the maze and are not in the visited set.
                 let neighbour = [z + directions[i][0], y + directions[i][1],
                                 x + directions[i][2], directions[i][3]];
                 if (neighbour[0] >= 0 && neighbour[0] < this.levels && neighbour[1] >= 0 && 
-                    neighbour[1] < this.columns && neighbour[2] >= 0 && neighbour[2] < this.rows && 
+                    neighbour[1] < this.rows && neighbour[2] >= 0 && neighbour[2] < this.columns && 
                     visited.has(neighbour.slice(0,3).toString()) === false) {
                     
                     // If the neighbour position is equal to goal cell then return the maze.
@@ -122,6 +121,8 @@ class DFSMaze3DGenerator extends Maze3DGenerator {
         }
         return arr;
     }
+
+    measureAlgorithmTime() {}
 };
 
 export default DFSMaze3DGenerator;

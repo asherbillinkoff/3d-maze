@@ -2,6 +2,7 @@ import MazeHTML from "./gui/maze-html.js";
 
 const mazeContainer = document.getElementById('maze-container');
 
+// TODO: Maybe there's some way to automate this?
 // Start Game button listener.
 const startBtn = document.getElementById('start-game');
 startBtn.addEventListener('click', () => {
@@ -30,4 +31,5 @@ function startingSequence() {
     // Initiate the mazeHTML object.
     const mazeHTML = new MazeHTML(mazeContainer, lvls, cols, rows, genAlgo, playerIcon);
     mazeHTML.createMaze();
+    mazeHTML.maze.toString();
 };

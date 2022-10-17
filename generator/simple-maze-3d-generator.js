@@ -8,7 +8,7 @@ import Maze3DGenerator from './maze-3d-generator.js';
  */
 class SimpleMaze3DGenerator extends Maze3DGenerator {
     /**
-     * DFS generator constructor.
+     * Simple and random maze generator constructor.
      * @param {*} levels Levels for the maze to generate.
      * @param {*} columns Columns for the maze to generate.
      * @param {*} rows Rows for the maze to generate.
@@ -18,8 +18,9 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
     }
     
     /**
-     * Generate the maze.
-     * @returns {Maze3D} Object containing the maze and it's size parameters.
+     * Method generates a grid with random wall placements everywhere.
+     * It calls another helper function to carve a path from start cell to goal cell.
+     * @returns {Maze3D} Object containing the maze and start/goal cell locations.
      */
     generate() {
         const maze = [];
@@ -62,7 +63,7 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
                         if (i === 0) {
                             currCell.addWall('l', true);
                         }
-                        else if (j === this.columns - 1) {
+                        else if (i === this.columns - 1) {
                             currCell.addWall('r', true);
                         }
                     }
@@ -70,11 +71,14 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
                     currLevel[j][i] = currCell;
                         
                     // Syncing neighbouring walls with existing cells.
-                    if (i > 0 && i < this.rows && currLevel[j][i - 1]) {
+                    // Checks the boolean value of the neighbour's adjacent wall.
+                    // Only checking for left, forward and down neighbours to minimize
+                    // computations/runtime.
+                    if (i > 0 && i < this.columns && currLevel[j][i - 1]) {
                         let leftNeighbourBoolean = currLevel[j][i - 1].walls.get('r');
                         currCell.addWall('l', leftNeighbourBoolean);
                     }
-                    if (j > 0 && j < this.columns && currLevel[j - 1][i]) {
+                    if (j > 0 && j < this.rows && currLevel[j - 1][i]) {
                         let forwardNeighbourBoolean = currLevel[j - 1][i].walls.get('b')
                         currCell.addWall('f', forwardNeighbourBoolean);
                     }
@@ -93,21 +97,26 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
     }
 
     /**
-     * 
+     * This method carves a random path from the start cell to the goal cell by
+     * calculating a direction vector which orients the carved path to select
+     * random 
      * @param {Array} maze Array containing all levels of the maze.
      * @returns {Array} Conatins start cell, goal cell and the maze array.
      */
     _carveRandomPath(maze) {
         // Generate the start and goal cell locations.
         const startCell =  [Math.floor(Math.random() * this.levels),
-                            Math.floor(Math.random() * this.columns),
-                            Math.floor(Math.random() * this.rows)];
+                            Math.floor(Math.random() * this.rows),
+                            Math.floor(Math.random() * this.columns)];
         const goalCell = [Math.floor(Math.random() * this.levels),
-                            Math.floor(Math.random() * this.columns),
-                            Math.floor(Math.random() * this.rows)];
+                            Math.floor(Math.random() * this.rows),
+                            Math.floor(Math.random() * this.columns)];
         maze[startCell[0]][startCell[1]][startCell[2]].updateStatus('s');
         maze[goalCell[0]][goalCell[1]][goalCell[2]].updateStatus('g');
         let currCell = maze[startCell[0]][startCell[1]][startCell[2]];
+
+        // 'directionVector' provides the method with a general sense of what direction
+        // the carved path needs to move in order to arrive at the goal cell.
         const directionVector = [startCell[0] - goalCell[0],
                                 startCell[1] - goalCell[1],
                                 startCell[2] - goalCell[2]];
@@ -119,7 +128,8 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
                              (Math.abs(currCell.position[1] - goalCell[1])) +
                              (Math.abs(currCell.position[2] - goalCell[2]));
 
-            // Variable will select a random number between 0-2 which will select an axis for the path to randomly move.
+            // Variable will select a random number between 0-2 which will
+            // select an axis for the path to randomly increment towards.
             let directionChoice = Math.floor(Math.random() * startCell.length);
 
             if (directionChoice === 0) {
@@ -185,13 +195,11 @@ class SimpleMaze3DGenerator extends Maze3DGenerator {
         }
         return [maze, startCell, goalCell];
     }
-
-    measureAlgorithmTime() {
-        const start = Date.now();
-        this.generate();
-        const end = Date.now();
-        console.log(`The maze took ${end - start} ms to generate.`);
-    }
+    /**
+     * This method calculates the total time a generation algorithm takes to run
+     * and then prints it to the console.
+     */
+    measureAlgorithmTime() {}
 };
 
 export default SimpleMaze3DGenerator;

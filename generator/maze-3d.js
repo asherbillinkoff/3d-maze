@@ -18,9 +18,7 @@ class Maze3D {
         this.rows = this.maze[0].length;
     }
 
-    /**
-     * Prints all of the 2D slices of the maze levels to the console.
-     */
+    // Prints all of the 2D slices of the maze levels to the console.
     toString() {
         let header = '';
         let currRow = '';
@@ -47,7 +45,7 @@ class Maze3D {
                         // Prints the row number into the border.
                         currRow += String(j);
                     }
-                    else if (currCell.walls.get('l') === true) {
+                    else if (currCell.walls.get('l')) {
                         currRow += '|';
                     }
                     else {
@@ -55,19 +53,19 @@ class Maze3D {
                     }
 
                     // Separate if statement to check the wall status for the up down walls.
-                    if (currCell.checkStatus('s') === true) {
+                    if (currCell.checkStatus('s')) {
                         currRow += 'S';
                     }
-                    else if (currCell.checkStatus('g') === true) {
+                    else if (currCell.checkStatus('g')) {
                         currRow += 'G';
                     }
-                    else if (currCell.walls.get('u') === false && currCell.walls.get('d') === false) {
+                    else if (!currCell.walls.get('u') && !currCell.walls.get('d')) {
                         currRow += '↕';
                     }
-                    else if (currCell.walls.get('u') === false && currCell.walls.get('d') === true) {
+                    else if (!currCell.walls.get('u') && currCell.walls.get('d')) {
                         currRow += '↑';
                     }
-                    else if (currCell.walls.get('u') === true && currCell.walls.get('d') === false) {
+                    else if (currCell.walls.get('u') && !currCell.walls.get('d')) {
                         currRow += '↓';
                     }
                     else {
