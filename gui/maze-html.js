@@ -45,7 +45,7 @@ class MazeHTML {
     // This method generates the user selected type of maze and appends all levels,
     // rows and cells to their correct grid locations within the DOM. It also decorates
     // every cell border with the correct wall locations.
-    createMaze(maze) {
+    createMaze(savedMaze) {
         // Generate the maze based on the user input from the HTML form.
         if (this.genAlgo === 'dfs' && arguments.length === 0) {
             const dfsGen = new DFSMaze3DGenerator(this.levels, this.cols, this.rows);
@@ -60,9 +60,6 @@ class MazeHTML {
             this.startCell = this.maze.startCell;
             this.goalCell = this.maze.goalCell;
         }
-        else if (maze) {
-
-        }
 
         // Construct the html elements of the maze for each level.
         const mazeHTML = document.createElement('div');
@@ -70,7 +67,7 @@ class MazeHTML {
         // Create a title to display the current level.
         const currLevelTitle = document.createElement('h2');
         currLevelTitle.id = 'currLevelTitle';
-        currLevelTitle.textContent = 'Level ' + String(this.maze.startCell[0]);
+        currLevelTitle.textContent = 'Level ' + String(this.startCell[0]);
         currLevelTitle.style.color = 'cyan';
         mazeHTML.appendChild(currLevelTitle);
 
@@ -94,7 +91,7 @@ class MazeHTML {
             level.style.display = 'flex';
             level.style.flexDirection = 'column';
             level.style.position = 'relative';
-            if (k !== this.maze.startCell[0]) {
+            if (k !== this.startCell[0]) {
                 level.className = 'hiddenLevel';
                 level.style.display = 'none';
             }
@@ -154,12 +151,12 @@ class MazeHTML {
             gridContainer.appendChild(level);
         }
         this.elem.appendChild(mazeHTML);
-        this.initializePlayer();
+        this.initializePlayer(this.startCell);
     }
 
     // This method creates the HTML icon element for the player and places it on
     // the starting cell.
-    initializePlayer() {
+    initializePlayer(location) {
 
         // Initialize the player icon element if no player exists.
         if (document.getElementById('player')) {
@@ -173,9 +170,9 @@ class MazeHTML {
 
         // Position the player in the correct starting location. 2 is the number
         // of em units used per cell - this is why currX and currY are multiplied by 2.
-        const currX = 2 * this.startCell[2] + 0.5;
+        const currX = 2 * location[2] + 0.5;
         player.style.left = currX + 'em';
-        const currY = 2 * this.startCell[1] + 0.5;
+        const currY = 2 * location[1] + 0.5;
         player.style.top = currY + 'em';
         const grid = document.getElementById('gridContainer');
         grid.appendChild(player);
@@ -203,6 +200,7 @@ class MazeHTML {
                 (e.key === 'PageDown' && currCell[0] > 0 && currCell[0] < this.levels && !this.checkMove(currCell, dirLetter, dirArray))) {
                 [currCell, currLevel] = this.changeLevel(currCell, currLevel, e);
             }
+            else { }
         });
 
         // SOLVE GAME BUTTON LISTENER //
@@ -260,7 +258,7 @@ class MazeHTML {
         // RESET GAME BUTTON LISTENER //
         const resetBtn = document.getElementById('reset-game');
         resetBtn.addEventListener('click', e => {
-            this.initializePlayer();
+            this.initializePlayer(this.startCell);
             [currCell, currLevel] = this.changeLevel(currCell, currLevel);
         });
 
@@ -277,13 +275,23 @@ class MazeHTML {
             const flashHint = setTimeout(() => {
                 hintCell.style.backgroundColor = 'transparent';
             }, 1000);
-
         });
 
         // SAVE GAME BUTTON LISTENER //
+        const mazeName = document.getElementById('maze-name');
         const saveGameBtn = document.getElementById('save-game');
         saveGameBtn.addEventListener('click', () => {
-            saveGameBtn()
+            this.saveGame(mazeName.value);
+        });
+
+        // LOAD GAME BUTTON LISTENER //
+        const loadGameBtn = document.getElementById('load-game');
+        loadGameBtn.addEventListener('click', () => {
+            const mazeContainer = document.getElementById('maze-container');
+            mazeContainer.textContent = '';
+            this.loadGame(mazeName.value);
+            // Cannot get this method working properly. The listener continues
+            // to execute on an infinite loop for some reason?
         });
     }
 
@@ -298,7 +306,7 @@ class MazeHTML {
                 winMsg.textContent = 'YOU WON!';
                 this.elem.style.display = 'flexbox';
                 this.elem.style.flexDirection = 'column';
-                this.elem.style.maxWidth = '400px';
+                this.elem.style.maxWidth = '75em';
                 this.elem.style.justifyContent = 'center';
                 this.elem.style.textAlign = 'center';
                 this.elem.style.color = 'cyan';
@@ -335,15 +343,28 @@ class MazeHTML {
     // Method is responsible for moving the player between 3D levels (up and down).
     // Takes care of hiding and activating the appropriate levels.
     changeLevel(currCell, currLevel, e) {
-        if (e.key.includes("Page")) {
+        if (e.key === "PageUp") {
             e.preventDefault();
             currLevel.className = 'hiddenLevel';
             currLevel.style.display = 'none';
-            let nextLevelID = 'Level' + (currCell[0] + MazeHTML.directions.get(e.key)[0][0]);
+            let nextLevelID = 'Level' + (currCell[0] + 1);
             let nextLevel = document.getElementById(nextLevelID);
             nextLevel.className = 'activeLevel';
             nextLevel.style.display = 'flex';
-            currCell = [currCell[0] + MazeHTML.directions.get(e.key)[0][0], currCell[1], currCell[2]];
+            currCell = [currCell[0] + 1, currCell[1], currCell[2]];
+            let levelTitle = document.getElementById('currLevelTitle');
+            levelTitle.textContent = 'Level ' + (currCell[0]);
+            return [currCell, nextLevel];
+        }
+        else if (e.key === "PageDown") {
+            e.preventDefault();
+            currLevel.className = 'hiddenLevel';
+            currLevel.style.display = 'none';
+            let nextLevelID = 'Level' + (currCell[0] - 1);
+            let nextLevel = document.getElementById(nextLevelID);
+            nextLevel.className = 'activeLevel';
+            nextLevel.style.display = 'flex';
+            currCell = [currCell[0] - 1, currCell[1], currCell[2]];
             let levelTitle = document.getElementById('currLevelTitle');
             levelTitle.textContent = 'Level ' + (currCell[0]);
             return [currCell, nextLevel];
@@ -383,18 +404,36 @@ class MazeHTML {
             path.push(goalNode.state.key);
             goalNode = goalNode.parent;
         }
+        console.log(path);
         return path;
     }
 
-    saveGame() {
-        const nameInput = document.getElementById('maze-name');
-
+    saveGame(mazeName) {
+        // Save all required constructor attributes.
+        const savedMaze = this.maze;
+        const savedLevels = this.levels;
+        const savedCols = this.cols;
+        const savedRows = this.rows;
+        const savedStart = this.startCell;
+        const savedGoal = this.goalCell;
+        const savedGame = [savedMaze, savedLevels, savedCols, savedRows, savedStart, savedGoal];
+        this.savedGames.set(mazeName, savedGame);
+        alert(`${mazeName} has been saved successfully.`);
     }
 
-    loadGame(name) {
-        if (!this.savedGames.get(nameInput)) {
+    loadGame(mazeName) {
+        if (!this.savedGames.get(mazeName)) {
             alert('No game saved with that name.')
         }
+        const loadedGame = this.savedGames.get(mazeName);
+        this.maze = loadedGame[0];
+        this.levels = loadedGame[1];
+        this.cols = loadedGame[2];
+        this.rows = loadedGame[3];
+        this.startCell = loadedGame[4];
+        this.goalCell = loadedGame[5];
+        this.createMaze(this.maze);
+        alert(`${mazeName} has been loaded successfully.`);
     }
 };
 

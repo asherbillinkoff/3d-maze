@@ -110,10 +110,6 @@
         <form id="form">
             <ul>
                 <li>
-                    <label for="maze-name">Name:</label>
-                    <input type="text" id="maze-name" text="maze-name" value="Asher's Maze">
-                </li>
-                <li>
                     <label for="rows">Rows:</label>
                     <input type="number" id="rows" text="rows" min="3" max="50" value="5">
                 </li>
@@ -128,8 +124,8 @@
                 <li>
                     <label for="gen-algo">Gen Algo:</label>
                     <select id="gen-algo" name="gen-algo">
-                        <option value="dfs">DFS</option>
                         <option value="simple">Simple</option>
+                        <option value="dfs">DFS</option>
                         <option value="prim">Prim</option>
                     </select>
                 </li>
@@ -143,14 +139,21 @@
                     <button type="button" class="game-btn" id="show-hint">Show Hint</button>
                 </li>
                 <li>
+                    <label for="maze-name">Game Name:</label>
+                    <input type="text" id="maze-name" text="maze-name" placeholder="Enter Name">
+                </li>
+                <li>
                     <button type="button" class="game-btn" id="save-game">Save Game</button>
+                </li>
+                <li>
+                    <button type="button" class="game-btn" id="load-game">Load Game</button>
                 </li>
                 <li>
                     <label for="search-algo">Search Algo:</label>
                     <select id="search-algo" name="search-algo">
+                        <option value="a-star">A-Star</option>
                         <option value="dfs">DFS</option>
                         <option value="bfs">BFS</option>
-                        <option value="a-star">A-Star</option>
                     </select>
                 </li>
                 <li>
