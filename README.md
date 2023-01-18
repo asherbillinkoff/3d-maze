@@ -1,2 +1,3 @@
-# 3d-maze
-BrightCode project implementation of a 3D Maze composed of 2D slices.
+3D Maze Project
+
+Upon finishing our search problems unit our class was tasked with the assignment of generating and solving 3D mazes using various searching algorithms, such as Breadth-First Search, Depth-First Search and A-Star Search. This unit also covered topics such as Iterative Deepening, Uniform Cost Search, Heuristics, Greedy Search and Dependency Injection. You can generate a maze with rows, columns and levels which you can toggle through as you search for the final cell (denoted with a 'G' for goal. You can also choose an algorithm for maze generation as well as an algorithm for solving the maze (BFS, DFS or A-Star). For my UI I decided to make it themed like the movie Tron with color schemes and font.
