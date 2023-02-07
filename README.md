@@ -31,6 +31,11 @@ The player (motorcycle avatar) can be directed using the keyboard arrows and if 
 </p>
 <p align="center"><strong>Figure 2: Multi-level maze game view after board initialization</strong></p>
 
-For the GUI I chose to make the arrows different colors to provide strong visual cues to the user signalling where they could change levels. I believe this allows for a more straightforward game experience. The user will always start at the "S" cell representing the Start, and they will be seeking the "G" cell representing the goal. Upon navigating to the goal window will display
+For the GUI I chose to make the arrows different colors to provide strong visual cues to the user signalling where they could change levels. I believe this allows for a more straightforward game experience. The user will always start at the "S" cell representing the start, and they will be seeking the "G" cell representing the goal. Upon navigating to the goal window will display the gif below.
+
+<p align="center">
+<img width="400" alt="figure-2" src="https://user-images.githubusercontent.com/109813330/217246631-edb78fc5-7ca0-4297-a4b2-b1dfd3ff8b33.png">
+</p>
+<p align="center"><strong>Figure 2: Multi-level maze game view after board initialization</strong></p>
 
 
