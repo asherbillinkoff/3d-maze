@@ -17,13 +17,20 @@ Upon finishing our search problems unit our class was tasked with the assignment
 
 ## Instructions
 
-The player (motorcycle avatar) can be directed using the keyboard arrows. If the user has selected a maze with more than one level then they will see something similar to the figure below.
-
-
-
-Before the maze is generated he user can choose to select:
+Before the maze is generated the user can choose to select the size of their game board along with the different algorithms they would like to utilize. They can choose to select:
 * Number of Rows
 * Number of Columns
 * Number of Levels
 * Algorithm for generating the maze
 * Algorithm for solving the maze
+
+The player (motorcycle avatar) can be directed using the keyboard arrows and if a multi-level board has been generated, they can use the "PageUp" and "PageDown" keys where available (fn-up and fn-down on Mac). If the user has selected a maze with more than one level then they will see something similar to the figure below.
+
+<p align="center">
+<img width="400" alt="figure-2" src="https://user-images.githubusercontent.com/109813330/217246631-edb78fc5-7ca0-4297-a4b2-b1dfd3ff8b33.png">
+</p>
+<p align="center"><strong>Figure 2: Multi-level maze game view after board initialization</strong></p>
+
+For the GUI I chose to make the arrows different colors to provide strong visual cues to the user signalling where they could change levels. I believe this allows for a more straightforward game experience. The user will always start at the "S" cell representing the Start, and they will be seeking the "G" cell representing the goal. Upon navigating to the goal window will display
+
+
