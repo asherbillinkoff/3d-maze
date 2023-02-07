@@ -35,7 +35,7 @@ For the GUI I chose to make the arrows different colors to provide strong visual
 
 <p align="center">
 <img width="400" alt="figure-3" src="https://user-images.githubusercontent.com/109813330/217248210-ded3adee-9b41-4b03-94cb-52a2b4cdf2fa.png"></p>
-<p align="center"><strong>Figure 2: Game Winning View</strong></p>
+<p align="center"><strong>Figure 3: Game Winning View</strong></p>
 
 <p>Please game responsibly! :grinning:<p> 
 
